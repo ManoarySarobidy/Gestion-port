@@ -107,22 +107,23 @@ public class Escale extends Proposition {
     }
 
     public static Escale getByReference( Connection connection, String reference ) throws Exception{
-        String sql = "select * from v_escale where reference like %"+reference+"%";
-            java.sql.Statement st = connection.createStatement();
-            java.sql.ResultSet set = st.executeQuery( sql );
-            set.next();
-            String refer = set.getString("reference");
-            Timestamp debut = set.getTimestamp("debut");
-            String idBateau = set.getString("idBateau");
-            Timestamp fin = set.getTimestamp("fin");
-            double cours = set.getDouble("cours");
-            Escale escale = new Escale();
-            escale.setBateau( idBateau );
-            escale.setReference( reference );
-            escale.setArrive( debut );
-            escale.setDepart( fin );
-            escale.setCours( cours );
-            return escale;
+        String sql = "select * from v_escale where reference like '%"+reference+"%'";
+        if (true) throw new Exception(sql);
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery( sql );
+        set.next();
+        String refer = set.getString("reference");
+        Timestamp debut = set.getTimestamp("debut");
+        String idBateau = set.getString("idBateau");
+        Timestamp fin = set.getTimestamp("fin");
+        double cours = set.getDouble("cours");
+        Escale escale = new Escale();
+        escale.setBateau( idBateau );
+        escale.setReference( reference );
+        escale.setArrive( debut );
+        escale.setDepart( fin );
+        escale.setCours( cours );
+        return escale;
     }
 
     public static Escale createEscale(String idQuai, String reference) throws Exception {

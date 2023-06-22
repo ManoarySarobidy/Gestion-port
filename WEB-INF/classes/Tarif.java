@@ -31,6 +31,10 @@ public class Tarif extends BddObject<Tarif> {
     Pavillon pavillon;
     Double prix;
 
+    public String getIdTarif() {
+        return idTarif;
+    }
+
     public Pavillon getPavillon() {
         return pavillon;
     }
@@ -95,6 +99,18 @@ public class Tarif extends BddObject<Tarif> {
     public Tarif() throws Exception {
         this.setTable("v_tarif_quai");
         this.setConnection("PostgreSQL");
+    }
+
+    public Time getHeureDebut() {
+        return heureDebut;
+    }
+
+    public Time getHeureFin() {
+        return heureFin;
+    }
+
+    public Double getMajoration() {
+        return majoration;
     }
 
     public Tarif(Double prix, Prestation prestation) throws Exception {

@@ -4,6 +4,7 @@ import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Escale;
 import java.sql.Time;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import connection.BddObject;
 
@@ -71,6 +72,14 @@ public class Prestation extends BddObject<Prestation> {
         tarif.setType(this.getEscale().getBateau().getType());
         tarif.setQuai(this.getEscale().getQuai());
         return tarif.findAll(connection, null);
+    }
+
+    public Tarif[] getTarifs() throws Exception {
+        Tarif[] tarifs = null;
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            tarifs = this.getTarifs(connection);
+        }
+        return tarifs;
     }
 
 }
