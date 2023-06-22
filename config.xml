@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<bddobject>
+    <connection name="PostgreSQL">
+        <host>localhost</host>
+        <port>5432</port>
+        <database>gestion_port</database>
+        <user>postgres</user>
+        <password>postgres</password>
+    </connection>
+</bddobject>
