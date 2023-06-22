@@ -125,5 +125,5 @@ create or replace view v_escale as
     from prevision as p
     join debut_escale as de
     on de.reference = p.reference
-    join fin_escale as f_e
+    left join fin_escale as f_e
     on f_e.id_debut = de.id_debut;

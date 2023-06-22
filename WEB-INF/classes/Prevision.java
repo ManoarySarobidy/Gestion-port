@@ -59,14 +59,14 @@ public class Prevision extends BddObject<Prevision> {
     }
 
     public void setArrive(Timestamp arrive) throws Exception {
-        if (arrive == null) throw new Exception("Date d'arrive est null"); 
+        // if (arrive == null) throw new Exception("Date d'arrive est null"); 
         if (new Timestamp(System.currentTimeMillis()).compareTo(arrive) >= 0) throw new Exception("Date doit etre un evenement a avenir");
         this.arrive = arrive;
     }
 
     public void setArrive(String arrive) throws Exception {
-        if (arrive == null) throw new Exception("Le champ arrive est null");
-        if (arrive.isEmpty()) throw new Exception("Le champ arrive est vide");
+        // if (arrive == null) throw new Exception("Le champ arrive est null");
+        if ( arrive != null &&  arrive.isEmpty()) throw new Exception("Le champ arrive est vide");
         this.setArrive(toDate(arrive));
     }
 
@@ -94,13 +94,13 @@ public class Prevision extends BddObject<Prevision> {
     }
 
     public void setDepart(Timestamp depart) throws Exception {
-        if (this.getArrive() == null) throw new Exception("Il n'y pas encore de date d'arrive");
-        if (this.getArrive().compareTo(depart) >= 0) throw new Exception("Depart doit etre derriere la date d'arrive");
+        // if (this.getArrive() == null) throw new Exception("Il n'y pas encore de date d'arrive");
+        if ( depart != null && this.getArrive().compareTo(depart) >= 0) throw new Exception("Depart doit etre derriere la date d'arrive");
         this.depart = depart;
     }
 
     public void setDepart(String depart) throws Exception {
-        if (depart == null) throw new Exception("Le champ depart est null");
+        // if (depart == null) throw new Exception("Le champ depart est null");
         if (depart.isEmpty()) throw new Exception("Le champ depart est vide");
         this.setDepart(toDate(depart));
     }
