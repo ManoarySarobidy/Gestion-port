@@ -18,7 +18,7 @@ public class Prestation extends BddObject<Prestation> {
     Double prix;
     Integer etat;
     Escale escale;
-    
+
     public Escale getEscale() {
         return escale;
     }
@@ -62,6 +62,31 @@ public class Prestation extends BddObject<Prestation> {
         String[] values = value.split("[.]");
         this.setIdPrestation(values[0]);
         this.setNom(values[1]);
+    }
+
+    public void insert(Connection con){
+        boolean open = false;
+        if (open==false) {
+            con = BddObject.getPostgreSQL();
+            open = true;
+        }
+        this.setCountPK(7);
+        this.setFunctionPK("nextval('seq_id_escale_prestation')");
+        this.setPrefix("ESP");
+        String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values (";
+        sql += "'" + buildPrimaryKey(connection) + "', ";
+        sql += "'" + this.getIdPrestation() + "', ";
+        sql += "'" + this.getReference() + "', ";
+        sql += "'" + this.getEscale().getIdQuai() + "', ";
+        sql += "'" + this.getDebut() + "', ";
+        sql += "'" + this.getFin() + "', ";
+        sql += "'" + this.getPrix() + "', ";
+        sql += "'" + this.getEtat() + "')";
+        con.execute(sql);
+        if (open==true) {
+            con.close();
+            open = false;
+        }
     }
 
 }
