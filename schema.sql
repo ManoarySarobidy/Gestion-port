@@ -83,8 +83,8 @@ CREATE TABLE tarif (
     idQuai VARCHAR(50) REFERENCES quai(idQuai),
     idPrestation VARCHAR(50) REFERENCES prestation(idPrestation),
     idType VARCHAR(50) REFERENCES type(idType),
-    heure_debut TIME WITH TIME ZONE NOT NULL DEFAULT 0,
-    heure_fin TIME WITH TIME ZONE NOT NULL DEFAULT 0,
+    heure_debut TIME WITH TIME ZONE NOT NULL,
+    heure_fin TIME WITH TIME ZONE NOT NULL,
     majoration DOUBLE PRECISION NOT NULL DEFAULT 0,
     debut DOUBLE PRECISION NOT NULL DEFAULT 0,
     fin DOUBLE PRECISION NOT NULL DEFAULT 0,
@@ -96,14 +96,3 @@ CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT * 
 FROM prevision 
 WHERE arrive > NOW();
-
-CREATE OR REPLACE VIEW v_tarif_quai AS
-SELECT idTarif, idQuai, detail.idPrestation, idType, idPavillon, tra.debut, tra.fin, prix
-FROM tarif tar
-    JOIN detailtarif detail ON tar.idDetailTarif = detail.idDetailTarif
-    JOIN tranche tra ON tra.tranche = tar.tranche;
-
-SELECT 'TAR001' as idTarif, idquai, idPrestation, idType, idPavillon, 0 as debut, 0 as fin, SUM(prix)
-FROM v_tarif_quai
-WHERE idquai='QUA001' AND idPrestation='PRES001' AND idType='TYP001' AND idPavillon='PAV01' AND debut < 40
-GROUP BY idquai, idPrestation, idType, idPavillon;
