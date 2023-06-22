@@ -114,6 +114,11 @@ CREATE SEQUENCE seq_id_fin
     increment by 1
     minvalue 0;
 
+CREATE SEQUENCE seq_id_tarif
+    start with 1
+    increment by 1
+    minvalue 0;
+
 CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT *
 FROM prevision

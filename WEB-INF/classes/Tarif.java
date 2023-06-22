@@ -1,6 +1,7 @@
 package escale;
 
 import java.sql.Time;
+import java.sql.Connection;
 import bateau.Pavillon;
 import bateau.TypeBateau;
 import connection.BddObject;
@@ -9,6 +10,8 @@ import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Prestation;
 import port.Quai;
+import connection.BddObject;
+import formulaire.Formulaire;
 
 public class Tarif extends BddObject<Tarif> {
 
@@ -30,6 +33,20 @@ public class Tarif extends BddObject<Tarif> {
     @ForeignKey
     Pavillon pavillon;
     Double prix;
+
+    public void setIdTarif(String idTarif) {
+        this.idTarif = idTarif;
+    }
+
+    public String getIdTarif() {
+        return idTarif;
+    }
+
+    public void setQuai(String idQuai) throws Exception {
+        Quai quai = new Quai();
+        quai.setIdQuai(idQuai);
+        this.setQuai(quai);
+    }
 
     public Pavillon getPavillon() {
         return pavillon;
@@ -53,12 +70,23 @@ public class Tarif extends BddObject<Tarif> {
         this.prestation = prestation;
     }
 
+    public void setPrestation(String idPrestation) throws Exception {
+        Prestation prestation = new Prestation(idPrestation);
+        this.setPrestation(prestation);
+    }
+
     public Prestation getPrestation() {
         return prestation;
     }
 
     public void setType(TypeBateau type) {
         this.type = type;
+    }
+
+    public void setType(String idType) throws Exception {
+        TypeBateau type = new TypeBateau();
+        type.setIdType(idType);
+        this.setType(type);
     }
 
     public TypeBateau getType() {
@@ -94,6 +122,9 @@ public class Tarif extends BddObject<Tarif> {
 
     public Tarif() throws Exception {
         this.setTable("v_tarif_quai");
+        this.setFunctionPK("nextval('seq_id_tarif')");
+        this.setCountPK(7);
+        this.setPrefix("TAR");
         this.setConnection("PostgreSQL");
     }
 
@@ -105,6 +136,24 @@ public class Tarif extends BddObject<Tarif> {
 
     public String toString() {
         return Double.toString(this.getPrix()) + " " + this.getPavillon().getDevise().getValeur();
+    }
+
+    public static Formulaire createFormulaire() throws Exception {
+        Formulaire form = null;
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            form = Formulaire.createFormulaire(new Tarif());
+            form.getListeChamp()[0].setVisible(false, "");
+            form.setAction("/gestion-port/insert");
+            form.getListeChamp()[1].changeToDrop(new Quai().findAll(connection, null), "getNom", "getIdQuai");
+            // form.getListeChamp()[2].changeToDrop(new Prestation().findAll(connection, null), "getNom", "getIdPrestation");
+            form.getListeChamp()[3].changeToDrop(new TypeBateau().findAll(connection, null), "getNom", "getIdType");
+            form.getListeChamp()[4].setLabel("Heure de debut");
+            form.getListeChamp()[5].setLabel("Heure de fin");
+            form.getListeChamp()[7].setType("datetime-local");
+            form.getListeChamp()[8].setType("datetime-local");
+            form.getListeChamp()[9].changeToDrop(new Pavillon().findAll(connection, null), "getNom", "getIdPavillon");
+        }
+        return form;
     }
 
 }

@@ -28,6 +28,10 @@ public class Prestation extends BddObject<Prestation> {
         this.escale = escale;
     }
 
+    public String getReference() {
+        return reference;
+    }
+
     public String getIdPrestation() {
         return idPrestation;
     }
@@ -58,7 +62,7 @@ public class Prestation extends BddObject<Prestation> {
         this.setIdPrestation(idPrestation);
     }
 
-    public void setPrestation(String value) throws Exception {
+    public void setPrestation(String value, Tarif tarif) throws Exception {
         String[] values = value.split("[.]");
         this.setIdPrestation(values[0]);
         this.setNom(values[1]);

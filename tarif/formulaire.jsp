@@ -1,3 +1,10 @@
+<%@page import="formulaire.Formulaire" %>
+<%@page import="escale.Tarif" %>
+<%
+
+    Formulaire form = Tarif.createFormulaire();
+
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +15,8 @@
     <title>Saisie de tarif</title>
 </head>
 <body>
-    
+    <div class="container mt-4">
+        <%=form.getHTMLString() %>
+    </div>
 </body>
 </html>
