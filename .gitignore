@@ -1,4 +1,4 @@
 .gitignore
 /.vscode
-compile.sh
 config.xml
+compile.sh
