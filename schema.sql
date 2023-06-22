@@ -106,7 +106,8 @@ CREATE SEQUENCE seq_id_debut
 CREATE table fin_escale(
     id_fin varchar(7) primary key,
     id_debut varchar(7) references debut_escale(id_debut),
-    debut timestamp not null
+    fin timestamp not null,
+    cours DOUBLE PRECISION NOT NULL DEFAULT 0
 );
 
 CREATE SEQUENCE seq_id_fin
