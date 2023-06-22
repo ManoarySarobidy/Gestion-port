@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
+import port.Quai;
 import prevision.Prevision;
 import prevision.Proposition;
 import bateau.Bateau;
@@ -51,6 +52,14 @@ public class Escale extends Proposition {
             if (p.getIdPrestation().equals(prestation.getIdPrestation())) return true;
         }
         return false;
+    }
+
+    public static Escale createEscale(String idQuai, String reference) throws Exception {
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            Quai quai = new Quai();
+            quai.setIdQuai(idQuai);
+            escale.setQuai(quai.getById(connection));
+        }
     }
 
     // public Escale[] findAll(Connection connection, String order) throws Exception {

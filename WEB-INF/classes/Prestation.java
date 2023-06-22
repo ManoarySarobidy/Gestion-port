@@ -1,5 +1,6 @@
 package escale;
 
+import java.sql.Connection;
 import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Escale;
@@ -66,6 +67,15 @@ public class Prestation extends BddObject<Prestation> {
         String[] values = value.split("[.]");
         this.setIdPrestation(values[0]);
         this.setNom(values[1]);
+    }
+
+    public Tarif[] getTarifs(Connection connection) {
+        Tarif tarif = new Tarif();
+        tarif.setQuai(this.getEscale().getBateau().getQuai());
+        tarif.setPrestation(this);
+        tarif.setPavillon(this.getEscale().getBateau().getPavillon());
+        tarif.setType(this.getEscale().getBateau().getType());
+        return tarif.findAll(connection);
     }
 
 }
