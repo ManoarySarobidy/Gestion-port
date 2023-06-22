@@ -66,7 +66,7 @@ public class Prestation extends BddObject<Prestation> {
     }
 
 
-    public void insert(Connection con){
+    public void insert(Connection con) throws Exception {
         boolean open = false;
         if (open==false) {
             con = BddObject.getPostgreSQL();
@@ -89,6 +89,7 @@ public class Prestation extends BddObject<Prestation> {
             con.close();
             open = false;
         }
+    }
 
     public Tarif[] getTarifs(Connection connection) throws Exception {
         Tarif tarif = new Tarif();
