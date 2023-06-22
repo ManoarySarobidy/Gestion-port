@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
-
 import prevision.Prevision;
 import prevision.Proposition;
 import connection.BddObject;
@@ -76,31 +75,27 @@ public class Escale extends Proposition {
     public Escale[] findAll(Connection connection, String order) throws Exception {
         String sql = "select * from v_escale";
         ArrayList<Escale> escales = new ArrayList<Escale>();
-        try{
-            java.sql.Statement st = connection.createStatement();
-            java.sql.ResultSet set = st.executeQuery( sql );
-            while( set.next() ){
-                String reference = set.getString("reference");
-                Timestamp debut = set.getTimestamp("debut");
-                String idBateau = set.getString("idBateau");
-                Timestamp fin = set.getTimestamp("fin");
-                double cours = set.getDouble("cours");
-                Escale escale = new Escale();
-                escale.setBateau( idBateau );
-                escale.setReference( reference );
-                escale.setArrive( debut );
-                escale.setDepart( fin );
-                escale.setCours( cours );
-                escales.add(escale);
-            }
-            st.close();
-            return escales.toArray( new Escale[ escales.size() ] );
-        }catch (Exception e) {
-            throw e;
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery( sql );
+        while( set.next() ){
+            String reference = set.getString("reference");
+            Timestamp debut = set.getTimestamp("debut");
+            String idBateau = set.getString("idBateau");
+            Timestamp fin = set.getTimestamp("fin");
+            double cours = set.getDouble("cours");
+            Escale escale = new Escale();
+            escale.setBateau( idBateau );
+            escale.setReference( reference );
+            escale.setArrive( debut );
+            escale.setDepart( fin );
+            escale.setCours( cours );
+            escales.add(escale);
         }
+        st.close();
+        return escales.toArray( new Escale[ escales.size() ] );
     }
 
-    public void debuter() throws Exception{
+    public void debuter() throws Exception {
         DebutEscale debutEscale = new DebutEscale(getReference(), getArrive());
         Connection connection = null;
         try {
@@ -110,7 +105,7 @@ public class Escale extends Proposition {
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
-            e.printStackTrace();
+            throw e;
         } finally {
             connection.close();
         }
@@ -133,6 +128,15 @@ public class Escale extends Proposition {
             escale.setDepart( fin );
             escale.setCours( cours );
             return escale;
+    }
+
+    public static Escale createEscale(String idQuai, String reference) throws Exception {
+        Escale escale = null;
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            escale = Escale.getByReference(connection, reference);
+            escale.setQuai(idQuai);
+        }
+        return escale;
     }
 
 }
