@@ -24,9 +24,9 @@ public class Tarif extends BddObject<Tarif> {
     Time heureDebut;
     @ColumnName("heure_fin")
     Time heureFin;
+    Double majoration;
     Double debut;
     Double fin;
-    Double majoration;
     @ForeignKey
     Pavillon pavillon;
     Double prix;
