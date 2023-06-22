@@ -115,13 +115,29 @@ CREATE SEQUENCE seq_id_fin
     increment by 1
     minvalue 0;
 
+CREATE TABLE escale_prestation(
+    id_escale_prestation varchar(7) primary key,
+    id_prestation varchar(7) references prestation(idPrestation),
+    reference varchar(7) references prevision(reference),
+    id_quai varchar(7) references quai(idQuai),
+    debut timestamp,
+    fin timestamp,
+    prix double precision,
+    etat INTEGER
+);
+
+CREATE SEQUENCE seq_id_escale_prestation
+    start with 1
+    increment by 1
+    minvalue 0;
+
 CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT *
 FROM prevision
 WHERE arrive > NOW();
 
 create or replace view v_escale as
-    select p.idBateau as idBateau, de.debut as debut, 
+    select p.idBateau as idBateau, de.debut as debut,
     f_e.fin as fin, p.reference as reference , f_e.cours as cours
     from prevision as p
     join debut_escale as de
