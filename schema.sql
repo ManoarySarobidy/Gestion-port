@@ -92,30 +92,32 @@ CREATE TABLE tarif (
     prix DOUBLE PRECISION NOT NULL DEFAULT 0
 );
 
-CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
-SELECT * 
-FROM prevision 
-WHERE arrive > NOW();
-
 CREATE table debut_escale(
     id_debut varchar(7) primary key,
     reference varchar(50) references prevision(reference),
     debut timestamp not null
 );
+
 CREATE SEQUENCE seq_id_debut
     start with 1
     increment by 1
     minvalue 0;
+
 CREATE table fin_escale(
     id_fin varchar(7) primary key,
     id_debut varchar(7) references debut_escale(id_debut),
-    fin timestamp not null,
-    cours double precision
+    debut timestamp not null
 );
+
 CREATE SEQUENCE seq_id_fin
     start with 1
     increment by 1
     minvalue 0;
+
+CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
+SELECT *
+FROM prevision
+WHERE arrive > NOW();
 
 create or replace view v_escale as
     select p.idBateau as idBateau, de.debut as debut, 

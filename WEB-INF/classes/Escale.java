@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
-// import escale.Stationnement;
+
 import prevision.Prevision;
 import prevision.Proposition;
+import connection.BddObject;
 import bateau.Bateau;
 import connection.BddObject;
 
@@ -40,7 +41,7 @@ public class Escale extends Proposition {
         this.setBateau(bateau);
         this.setArrive(arrive);
         this.setDepart(depart);
-        this.setReference(reference);
+        setReference(reference);
     }
 
     public void ajouterPrestation(Prestation prestation) throws Exception {
@@ -94,5 +95,24 @@ public class Escale extends Proposition {
         }
     }
 
+    public void debuter() throws Exception{
+        DebutEscale debutEscale = new DebutEscale(getReference(), getArrive());
+        Connection connection = null;
+        try {
+            connection = BddObject.getPostgreSQL();
+            debutEscale.setIdDebut(debutEscale.buildPrimaryKey(connection));
+            debutEscale.insert(connection);
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
+            e.printStackTrace();
+        } finally {
+            connection.close();
+        }
+    }
+
+    // public Escale[] findAll(Connection connection, String order) throws Exception {
+
+    // }
 
 }

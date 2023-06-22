@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import connection.BddObject;
 import port.Quai;
+import escale.Escale;
 import prevision.Prevision;
 import prevision.Proposition;
 import escale.Escale;
@@ -123,5 +124,5 @@ public class Port {
             return port;
         }
     }
-    
+
 }
