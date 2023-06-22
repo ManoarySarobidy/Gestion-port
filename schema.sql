@@ -123,3 +123,12 @@ CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT *
 FROM prevision
 WHERE arrive > NOW();
+
+create or replace view v_escale as
+    select p.idBateau as idBateau, de.debut as debut, 
+    f_e.fin as fin, p.reference as reference , f_e.cours as cours
+    from prevision as p
+    join debut_escale as de
+    on de.reference = p.reference
+    left join fin_escale as f_e
+    on f_e.id_debut = de.id_debut;

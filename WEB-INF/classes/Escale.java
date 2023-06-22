@@ -2,13 +2,16 @@ package escale;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
 import port.Quai;
 import prevision.Prevision;
 import prevision.Proposition;
+import connection.BddObject;
 import bateau.Bateau;
+import connection.BddObject;
 
 public class Escale extends Proposition {
 
@@ -38,7 +41,7 @@ public class Escale extends Proposition {
         this.setBateau(bateau);
         this.setArrive(arrive);
         this.setDepart(depart);
-        this.setReference(reference);
+        setReference(reference);
     }
 
     public void ajouterPrestation(Prestation prestation) throws Exception {
@@ -54,16 +57,25 @@ public class Escale extends Proposition {
         return false;
     }
 
-    public static Escale createEscale(String idQuai, String reference) throws Exception {
-        try (Connection connection = BddObject.getPostgreSQL()) {
-            Quai quai = new Quai();
-            quai.setIdQuai(idQuai);
-            escale.setQuai(quai.getById(connection));
-        }
-    }
-
     // public Escale[] findAll(Connection connection, String order) throws Exception {
 
-    // }
+    public static Escale getByReference( Connection connection, String reference ) throws Exception{
+        String sql = "select * from v_escale where reference like %"+reference+"%";
+            java.sql.Statement st = connection.createStatement();
+            java.sql.ResultSet set = st.executeQuery( sql );
+            set.next();
+            String refer = set.getString("reference");
+            Timestamp debut = set.getTimestamp("debut");
+            String idBateau = set.getString("idBateau");
+            Timestamp fin = set.getTimestamp("fin");
+            double cours = set.getDouble("cours");
+            Escale escale = new Escale();
+            escale.setBateau( idBateau );
+            escale.setReference( reference );
+            escale.setArrive( debut );
+            escale.setDepart( fin );
+            escale.setCours( cours );
+            return escale;
+    }
 
 }

@@ -2,16 +2,44 @@ package port;
 
 import java.sql.Timestamp;
 import java.util.Vector;
+
+// import element.Proposition;
+
+import connection.BddObject;
 import port.Quai;
 import escale.Escale;
 import prevision.Prevision;
 import prevision.Proposition;
+import escale.Escale;
 
 public class Port {
 
     Quai[] quais;
     Proposition[] propositions;
     Escale[] escales;
+
+    public void setEscales( Escale[] escales ) throws Exception {
+        if( escales == null ) {
+            throw new Exception( "The escales can't be bull" );
+        }
+        this.escales = escales;
+    }
+
+    public Escale[] getEscales(){
+        return this.escales;
+    }
+
+
+    public void setPropositions( Proposition[] propositions ) throws Exception{
+        if( propositions == null ){
+            throw new Exception( "The propositions can't be bull" );
+        }
+        this.propositions = propositions;
+    }
+
+    public Proposition[] getPropositions(){
+        return this.propositions;
+    }
 
     public Quai[] getQuais() {
         return quais;
@@ -26,6 +54,8 @@ public class Port {
     public Port(Quai[] quais) throws Exception {
         this.setQuais(quais);
     }
+
+    public Port(){}
 
     public void enleverEscale(Timestamp date) {
         for (Quai quai : quais) {
@@ -82,6 +112,17 @@ public class Port {
             }
         }
         return min;
+    }
+
+    public static Port createPort() throws Exception{
+        Port port = new Port();
+        try( java.sql.  Connection connection = BddObject.getPostgreSQL() ){
+            Proposition[] props = Proposition.getPropositions(connection);
+            Escale[] escales = new Escale().findAll( connection, null );
+            port.setEscales( escales );
+            port.setPropositions( props );
+            return port;
+        }
     }
 
 }
