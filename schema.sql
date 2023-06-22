@@ -96,3 +96,8 @@ CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT * 
 FROM prevision 
 WHERE arrive > NOW();
+
+
+create or replace view v_escale as
+    select * 
+    from 

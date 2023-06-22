@@ -5,6 +5,7 @@ import java.util.Vector;
 import port.Quai;
 import prevision.Prevision;
 import prevision.Proposition;
+import escale.Escale;
 
 public class Port {
 
