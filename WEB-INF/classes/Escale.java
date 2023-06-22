@@ -45,9 +45,14 @@ public class Escale extends Proposition {
     }
 
     public void ajouterPrestation(Prestation prestation) throws Exception {
-        // if (contains(prestation)) throw new Exception("Prestation " + prestation.getNom() + " deja ajouter");
-        // prestation.setEscale(this);
-        // this.getListePrestation().add(prestation);
+        Connection connection = BddObject.getPostgreSQL();
+        if (contains(prestation)) throw new Exception("Prestation " + prestation.getNom() + " deja ajouter");
+        prestation.setDebut(getArrive());
+        prestation.setFin(getDepart());
+        prestation.setEscale(this);
+        prestation.setEtat(1);
+        prestation.setPrix();
+        prestation.insert(connection);
     }
 
     public boolean contains(Prestation prestation) {
