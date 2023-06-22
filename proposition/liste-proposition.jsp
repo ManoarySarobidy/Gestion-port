@@ -19,7 +19,7 @@
 <body>
     <div class="container mt-5">
         <div class="row">
-            
+
             <h2>Proposition</h2>
             <table class="table mt-3">
                 <tr>
@@ -64,8 +64,8 @@
                         <td><%=escales[i].getReference() %></td>
                         <td><%=escales[i].getArrive() %></td>
                         <td>
-                            <a href="" class="btn btn-primary"> Previsions </a>
-                        </td>               
+                            <a href="../escale/ajout-prestation.jsp?reference=<%=escales[i].getReference() %>" class="btn btn-primary"> Previsions </a>
+                        </td>
                     </tr>
                 <% } %>
 

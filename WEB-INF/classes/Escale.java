@@ -135,6 +135,7 @@ public class Escale extends Proposition {
         Escale escale = null;
         try (Connection connection = BddObject.getPostgreSQL()) {
             escale = Escale.getByReference(connection, reference);
+            escale.setPrestations(Prestation.findAll(connection, null));
             escale.setQuai(idQuai);
         }
         return escale;
