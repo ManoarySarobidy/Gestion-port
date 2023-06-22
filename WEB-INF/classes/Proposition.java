@@ -11,7 +11,7 @@ import prevision.Prevision;
 import port.Port;
 
 public class Proposition extends Prevision {
-    
+
     Quai quai;
     double attente;
 
@@ -73,7 +73,7 @@ public class Proposition extends Prevision {
             quai.setEscale(new Escale(propositions[i].getBateau(), propositions[i].getArrive(), propositions[i].getDepart(), propositions[i].getReference()));
             propositions[i].setQuai(quai);
         }
-        return propositions;                                                                                                                                                                                          
+        return propositions;
     }
 
     public static Proposition[] getPropositions() throws Exception {
@@ -92,4 +92,7 @@ public class Proposition extends Prevision {
         this.setAttente(convertToMinute(retard));
     }
 
+    public Escale createEscale() throws Exception{
+        return new Escale(getBateau(),getArrive(), getDepart(), getReference());
+    }
 }
