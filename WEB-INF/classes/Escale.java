@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
-import escale.Stationnement;
 import prevision.Prevision;
 import prevision.Proposition;
 import bateau.Bateau;
@@ -54,8 +53,8 @@ public class Escale extends Proposition {
         return false;
     }
 
-    public Escale[] findAll(Connection connection, String order) throws Exception {
-        
-    }
+    // public Escale[] findAll(Connection connection, String order) throws Exception {
+
+    // }
 
 }
