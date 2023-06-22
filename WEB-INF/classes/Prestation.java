@@ -5,6 +5,7 @@ import connection.annotation.PrimaryKey;
 import escale.Escale;
 import java.sql.Time;
 import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import connection.BddObject;
 
@@ -20,8 +21,36 @@ public class Prestation extends BddObject<Prestation> {
     Integer etat;
     Escale escale;
 
+    public void setPrix(Double prix) {
+        this.prix = prix;
+    }
+
+    public Double getPrix() {
+        return prix;
+    }
+
+    public Timestamp getFin() {
+        return fin;
+    }
+
+    public void setEtat(Integer etat) {
+        this.etat = etat;
+    }
+
+    public Integer getEtat() {
+        return etat;
+    }
+
+    public Timestamp getDebut() {
+        return debut;
+    }   
+
     public Escale getEscale() {
         return escale;
+    }
+
+    public String getReference() {
+        return reference;
     }
 
     public void setEscale(Escale escale) throws Exception {
@@ -49,6 +78,14 @@ public class Prestation extends BddObject<Prestation> {
         this.nom = nom;
     }
 
+    public void setDebut(Timestamp debut) {
+        this.debut = debut;
+    }
+
+    public void setFin(Timestamp fin) {
+        this.fin = fin;
+    }
+
     public Prestation() throws Exception {
         this.setTable("prestation");
         this.setConnection("PostgreSQL");
@@ -66,27 +103,28 @@ public class Prestation extends BddObject<Prestation> {
     }
 
 
-    public void insert(Connection con) throws Exception {
+    public void insert(Connection connection) throws Exception {
         boolean open = false;
-        if (open==false) {
-            con = BddObject.getPostgreSQL();
+        if (open) {
+            connection = BddObject.getPostgreSQL();
             open = true;
         }
         this.setCountPK(7);
         this.setFunctionPK("nextval('seq_id_escale_prestation')");
         this.setPrefix("ESP");
         String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values (";
-        sql += "'" + buildPrimaryKey(connection) + "', ";
+        sql += "'" + this.buildPrimaryKey(connection) + "', ";
         sql += "'" + this.getIdPrestation() + "', ";
         sql += "'" + this.getReference() + "', ";
-        sql += "'" + this.getEscale().getIdQuai() + "', ";
+        sql += "'" + this.getEscale().getQuai().getIdQuai() + "', ";
         sql += "'" + this.getDebut() + "', ";
         sql += "'" + this.getFin() + "', ";
         sql += "'" + this.getPrix() + "', ";
         sql += "'" + this.getEtat() + "')";
-        con.execute(sql);
-        if (open==true) {
-            con.close();
+        Statement statement = connection.createStatement();
+        statement.executeQuery(sql);
+        if (open) {
+            connection.close();
             open = false;
         }
     }

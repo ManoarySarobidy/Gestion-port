@@ -35,6 +35,10 @@ public class Tarif extends BddObject<Tarif> {
         return idTarif;
     }
 
+    public void setIdTarif(String idTarif) {
+        this.idTarif = idTarif;
+    }
+
     public Pavillon getPavillon() {
         return pavillon;
     }
@@ -48,6 +52,12 @@ public class Tarif extends BddObject<Tarif> {
         this.quai = quai;
     }
 
+    public void setQuai(String idQuai) {
+        Quai quai = new Quai();
+        quai.setIdQuai(idQuai);
+        this.setQuai(quai);
+    }
+
     public Quai getQuai() {
         return quai;
     }
@@ -57,12 +67,23 @@ public class Tarif extends BddObject<Tarif> {
         this.prestation = prestation;
     }
 
+    public void setPrestation(String idPrestation) {
+        Prestation prestation = new Prestation(idPrestation);
+        this.setPrestation(prestation);
+    }
+
     public Prestation getPrestation() {
         return prestation;
     }
 
     public void setType(TypeBateau type) {
         this.type = type;
+    }
+
+    public void setType(String idType) {
+        TypeBateau type = new TypeBateau();
+        type.setIdType(idType);
+        this.setType(type);
     }
 
     public TypeBateau getType() {
@@ -97,7 +118,7 @@ public class Tarif extends BddObject<Tarif> {
     }
 
     public Tarif() throws Exception {
-        this.setTable("v_tarif_quai");
+        this.setTable("tarif");
         this.setConnection("PostgreSQL");
     }
 

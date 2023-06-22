@@ -50,7 +50,7 @@ public class Escale extends Proposition {
         prestation.setFin(getDepart());
         prestation.setEscale(this);
         prestation.setEtat(1);
-        prestation.setPrix();
+        prestation.setPrix(1000.0);
         prestation.insert(connection);
     }
 
@@ -113,7 +113,6 @@ public class Escale extends Proposition {
 
     public static Escale getByReference( Connection connection, String reference ) throws Exception{
         String sql = "select * from v_escale where reference like '%"+reference+"%'";
-        if (true) throw new Exception(sql);
         java.sql.Statement st = connection.createStatement();
         java.sql.ResultSet set = st.executeQuery( sql );
         set.next();
