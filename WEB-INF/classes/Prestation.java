@@ -64,4 +64,13 @@ public class Prestation extends BddObject<Prestation> {
         this.setNom(values[1]);
     }
 
+    public Tarif[] getTarifs(Connection connection) throws Exception {
+        Tarif tarif = new Tarif();
+        tarif.setPavillon(this.getEscale().getBateau().getPavillon());
+        tarif.setPrestation(this);
+        tarif.setType(this.getEscale().getBateau().getType());
+        tarif.setQuai(this.getEscale().getQuai());
+        return tarif.findAll(connection, null);
+    }
+
 }
