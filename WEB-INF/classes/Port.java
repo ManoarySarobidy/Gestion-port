@@ -3,6 +3,7 @@ package port;
 import java.sql.Timestamp;
 import java.util.Vector;
 import port.Quai;
+import escale.Escale;
 import prevision.Prevision;
 import prevision.Proposition;
 
@@ -82,5 +83,5 @@ public class Port {
         }
         return min;
     }
-    
+
 }

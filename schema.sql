@@ -92,18 +92,29 @@ CREATE TABLE tarif (
     prix DOUBLE PRECISION NOT NULL DEFAULT 0
 );
 
+CREATE table debut_escale(
+    id_debut varchar(7) primary key,
+    reference varchar(50) references prevision(reference),
+    debut timestamp not null
+);
+
+CREATE SEQUENCE seq_id_debut
+    start with 1
+    increment by 1
+    minvalue 0;
+
+CREATE table fin_escale(
+    id_fin varchar(7) primary key,
+    id_debut varchar(7) references debut_escale(id_debut),
+    debut timestamp not null
+);
+
+CREATE SEQUENCE seq_id_fin
+    start with 1
+    increment by 1
+    minvalue 0;
+
 CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
-SELECT * 
-FROM prevision 
+SELECT *
+FROM prevision
 WHERE arrive > NOW();
-
-CREATE OR REPLACE VIEW v_tarif_quai AS
-SELECT idTarif, idQuai, detail.idPrestation, idType, idPavillon, tra.debut, tra.fin, prix
-FROM tarif tar
-    JOIN detailtarif detail ON tar.idDetailTarif = detail.idDetailTarif
-    JOIN tranche tra ON tra.tranche = tar.tranche;
-
-SELECT 'TAR001' as idTarif, idquai, idPrestation, idType, idPavillon, 0 as debut, 0 as fin, SUM(prix)
-FROM v_tarif_quai
-WHERE idquai='QUA001' AND idPrestation='PRES001' AND idType='TYP001' AND idPavillon='PAV01' AND debut < 40
-GROUP BY idquai, idPrestation, idType, idPavillon;
