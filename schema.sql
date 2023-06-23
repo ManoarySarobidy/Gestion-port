@@ -118,7 +118,7 @@ CREATE SEQUENCE seq_id_fin
 CREATE TABLE escale_prestation(
     id_escale_prestation varchar(7) primary key,
     id_prestation varchar(7) references prestation(idPrestation),
-    reference varchar(7) references prevision(reference),
+    reference varchar(50) references prevision(reference),
     id_quai varchar(7) references quai(idQuai),
     debut timestamp,
     fin timestamp,

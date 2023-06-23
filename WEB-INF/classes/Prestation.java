@@ -3,6 +3,8 @@ package escale;
 import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Escale;
+import port.Quai;
+
 import java.sql.Time;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -15,6 +17,8 @@ public class Prestation extends BddObject<Prestation> {
     String idPrestation;
     String nom;
     String reference;
+    @ForeignKey
+    Quai quai;
     Timestamp debut;
     Timestamp fin;
     Double prix;
@@ -37,13 +41,23 @@ public class Prestation extends BddObject<Prestation> {
         this.etat = etat;
     }
 
+    public void setQuai(Quai quai) {
+        this.quai = quai;
+    }
+
+    public void setQuai(String idQuai) throws Exception {
+        Quai quai = new Quai();
+        quai.setIdQuai(idQuai);
+        this.setQuai(quai.getById());
+    }
+
     public Integer getEtat() {
         return etat;
     }
 
     public Timestamp getDebut() {
         return debut;
-    }   
+    }
 
     public Escale getEscale() {
         return escale;
@@ -115,14 +129,16 @@ public class Prestation extends BddObject<Prestation> {
         String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values (";
         sql += "'" + this.buildPrimaryKey(connection) + "', ";
         sql += "'" + this.getIdPrestation() + "', ";
-        sql += "'" + this.getReference() + "', ";
+        sql += "'" + this.getEscale().getReference() + "', ";
         sql += "'" + this.getEscale().getQuai().getIdQuai() + "', ";
-        sql += "'" + this.getDebut() + "', ";
-        sql += "'" + this.getFin() + "', ";
-        sql += "'" + this.getPrix() + "', ";
-        sql += "'" + this.getEtat() + "')";
+        sql += "TO_TIMESTAMP('" + this.getDebut() + "', 'YYYY-MM-DD HH24:MI:SS.FF'),";
+        sql += "TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
+        sql += this.getPrix() + ", ";
+        sql += this.getEtat() + ")";
+        System.out.println(sql);
         Statement statement = connection.createStatement();
-        statement.executeQuery(sql);
+        statement.executeUpdate(sql);
+        connection.commit();
         if (open) {
             connection.close();
             open = false;

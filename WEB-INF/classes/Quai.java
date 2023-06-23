@@ -5,7 +5,7 @@ import connection.annotation.PrimaryKey;
 import escale.Escale;
 
 public class Quai extends BddObject<Quai> {
-    
+
     @PrimaryKey
     String idQuai;
     String nom;
