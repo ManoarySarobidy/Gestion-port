@@ -20,6 +20,16 @@ public class Escale extends Proposition {
     Quai[] quais;
     Double cours;
 
+    String idDebut;
+
+    public String getIdDebut() {
+        return idDebut;
+    }
+
+    public void setIdDebut(String idDebut) {
+        this.idDebut = idDebut;
+    }
+
     public void setPrestations(Prestation[] prestations) {
         this.prestations = prestations;
     }
@@ -94,7 +104,9 @@ public class Escale extends Proposition {
             String idBateau = set.getString("idBateau");
             Timestamp fin = set.getTimestamp("fin");
             double cours = set.getDouble("cours");
+            String idDebut = set.getString("id_debut");
             Escale escale = new Escale();
+            escale.setIdDebut(idDebut);
             escale.setBateau( idBateau );
             escale.setReference( reference );
             escale.setArrive( debut );
@@ -132,7 +144,9 @@ public class Escale extends Proposition {
         String idBateau = set.getString("idBateau");
         Timestamp fin = set.getTimestamp("fin");
         double cours = set.getDouble("cours");
+        String idDebut = set.getString("id_debut");
         Escale escale = new Escale();
+        escale.setIdDebut(idDebut);
         escale.setBateau( idBateau );
         escale.setReference( reference );
         escale.setArrive( debut );

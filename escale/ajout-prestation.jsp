@@ -5,7 +5,9 @@
     String reference = request.getParameter("reference");
     String idQuai = (request.getParameter("quai") != null) ? request.getParameter("quai") : "QUA001";
     Escale escale = Escale.createEscale(idQuai, reference);
+    String referenceIdDebut = escale.getReference();
 %>
+    <%=referenceIdDebut%>
     <%=reference%>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +21,7 @@
 <body>
     <div class="container w-50 shadow p-5 rounded-3" style="margin-top: 5rem;">
         <h1 class="text-center mb-4">Ajout prestation</h1>
+                
         <form method="get" action="./controlleur/insert-prestation.jsp" class="">
             <div class="row">
                 <h4 class="mb-2">Prestation</h4>
@@ -55,6 +58,7 @@
                 </select>
                 <input type="hidden" name="reference" value="<%=reference %>">
                 <input type="submit" value="Choisir" class="btn btn-primary mt-3">
+                <a href="./formulaire-fin-escale.jsp?idDebut=<%=escale.getIdDebut()%>"><button type="button" class="btn btn-primary mt-3">Fin escale</button></a>
             </form>
         </div>
 
