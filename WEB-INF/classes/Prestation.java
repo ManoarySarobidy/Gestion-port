@@ -26,7 +26,7 @@ public class Prestation extends BddObject<Prestation> {
     Integer etat;
     Escale escale;
     Tarif[] tarifs;
-
+    
     public void setTarifs(Tarif[] tarifs) {
         this.tarifs = tarifs;
     }

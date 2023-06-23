@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import escale.Prestation;
+import facture.Facture;
 import port.Quai;
 import prevision.Prevision;
 import prevision.Proposition;
@@ -153,6 +154,66 @@ public class Escale extends Proposition {
         return escale;
     }
 
+    public Facture facturer()throws Exception{
+        // TODO
+        //raha tsy mbola tapitra ny escale d mi throws exception 
+        Facture facture = new Facture();
+        
+        Vector<Facture> facturesFilles = new Vector<>();
+        for (Prestation prestation : getListePrestation()) {
+            if(prestation.getEtat() >= 10){
+                //superieur
+                //Tsy ampy cours
+                Facture factureZanaka = new Facture(prestation.getNom(),prestation.getPrix(), prestation.getQuai());
+                facturesFilles.add(factureZanaka);
+            }
+            
+        }
+        facture.setFactures(facturesFilles);
+        return facture;
+    
+    }
+
+
+    public static Escale createEscale(String reference) throws Exception{
+        Escale escale = null;
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            escale = Escale.getByReference(connection, reference);
+            escale.setPrestations(new Prestation().findAll(connection, null));
+            escale.setQuais(new Quai().findAll(connection, null));
+            escale.setListePrestation(escale.getPrestations(connection));
+        }
+        return escale;
+    }
+
+    public Prestation[] getPrestations(Connection connection) throws Exception{
+        String sql = "select * from escale_prestation e join prestation p on e.id_prestation=p.idPrestation ";
+        ArrayList<Prestation> prestations = new ArrayList<>();
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery( sql );
+        while( set.next() ){
+            String idPrestation = set.getString("id_prestation");
+            String nom = set.getString("nom");
+            String idQuai = set.getString("id_quai");
+            String reference = set.getString("reference");
+            Timestamp debut = set.getTimestamp("debut");
+            Timestamp fin = set.getTimestamp("fin");
+            Double prix = set.getDouble("prix");
+            Integer etat = set.getInt("etat");
+            Prestation prestation = new Prestation();
+            prestation.setIdPrestation(idPrestation);
+            prestation.setNom(nom);
+            prestation.setQuai(idQuai);
+            prestation.setDebut(debut);
+            prestation.setFin(fin);
+            prestation.setPrix(prix);
+            prestation.setEtat(etat);
+            prestation.setEscale(this);
+            prestations.add(prestation);
+        }
+        st.close();
+        return prestations.toArray( new Prestation[ prestations.size() ] );
+    }
     public Prestation[] getPrestations(Connection connection, String quai) throws Exception {
         String sql = "select * from escale_prestation e join prestation p on e.id_prestation=p.idPrestation where id_quai='" + quai + "'";
         ArrayList<Prestation> prestations = new ArrayList<>();

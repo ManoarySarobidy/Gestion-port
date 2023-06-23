@@ -4,7 +4,7 @@
         <host>localhost</host>
         <port>5432</port>
         <database>port</database>
-        <user>rakharrs</user>
+        <user>rakotoharisoa</user>
         <password>pixel</password>
     </connection>
 </bddobject>
