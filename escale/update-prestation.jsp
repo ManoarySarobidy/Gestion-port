@@ -4,6 +4,9 @@
 <%  
     String idPrestation = request.getParameter("prestation");
     String reference = request.getParameter("reference");
+    Prestation prestation = new Prestation();
+    prestation.setIdPrestation( idPrestation );
+    String idQuai = (request.getParameter("quai") != null) ? request.getParameter("quai") : "QUA001";
     Escale escale = Escale.createEscale(idQuai, reference);
 %>
     <%=reference%>
