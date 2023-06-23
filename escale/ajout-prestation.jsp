@@ -6,6 +6,7 @@
     String idQuai = (request.getParameter("quai") != null) ? request.getParameter("quai") : "QUA001";
     Escale escale = Escale.createEscale(idQuai, reference);
 %>
+    <%=reference%>
 <!DOCTYPE html>
 <html lang="en">
 <head>

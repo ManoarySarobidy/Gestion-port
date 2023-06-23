@@ -23,8 +23,8 @@ INSERT INTO utilisateur VALUES
 INSERT INTO quai VALUES
     ('QUA001', 'Q1', 30),
     ('QUA002', 'Q2', 40),
-    ('QUA003', 'Q3', 20);
-    ('QUA003', 'Q4', 50);
+    ('QUA003', 'Q3', 20),
+    ('QUA004', 'Q4', 50);
 
 INSERT INTO prestation VALUES
     ('PRES001', 'Stationnement'),
@@ -191,3 +191,5 @@ INSERT INTO tarif VALUES
     ('TAR' || nextval('seq_id_tarif'), 'QUA004', 'PRES002', 'TYP002', '0:00:00', '24:00:00', 0, 10, 20, 'PAV02', 150000),
     ('TAR' || nextval('seq_id_tarif'), 'QUA004', 'PRES002', 'TYP002', '0:00:00', '24:00:00', 0, 20, 30, 'PAV02', 200000),
     ('TAR' || nextval('seq_id_tarif'), 'QUA004', 'PRES002', 'TYP002', '0:00:00', '24:00:00', 0, 30, 'infinity', 'PAV02', 20000);
+
+truncate table debut_escale cascade ;

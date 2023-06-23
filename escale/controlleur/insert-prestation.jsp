@@ -8,7 +8,7 @@
         escale.setArrive(escale.toDate(request.getParameter("arrive")));
         escale.setDepart(escale.toDate(request.getParameter("depart")));
         escale.ajouterPrestation(prestation);
-        response.sendRedirect("../ajout-prestation?reference=" + prestation.getIdPrestation());
+        response.sendRedirect("../ajout-prestation.jsp?reference=" + request.getParameter("reference"));
     }catch(Exception e){
         out.println("Error "+e.getMessage());
     }
