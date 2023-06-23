@@ -4,6 +4,7 @@
 <%
     String reference = request.getParameter("reference");
     String quai = (request.getParameter("quai") != null) ? request.getParameter("quai") : "QUA001";
+    Prestation prestation = new Prestation();
     Escale escale = Escale.createEscale(quai, reference);
 %>
 <!DOCTYPE html>
@@ -16,7 +17,7 @@
     <title>Saisie de prevision</title>
 </head>
 <body>
-    <div class="container w-50 shadow p-5 rounded-3" style="margin-top: 5rem;">
+    <%-- <div class="container w-50 shadow p-5 rounded-3" style="margin-top: 5rem;">
         <h1 class="text-center mb-4">Ajout prestation</h1>
         <form method="post" action="./controlleur/insert-prestation.jsp" class="">
             <div class="row">
@@ -63,7 +64,7 @@
                     <th>Duree</th>
                     <th>Prix</th>
                 </tr>
-                <% for (Prestation prestation : escale.getQuais()) { %>
+                <% for (Prestation prestation : escale.getListePrestation()) { %>
                     <tr>
                         <td><%=prestation.getIdPrestation() %></td>
                         <td><%=prestation.getNom() %></td>
@@ -79,6 +80,6 @@
             </table>
         </div>
 
-    </div>
+    </div> --%>
 </body>
 </html>

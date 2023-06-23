@@ -60,7 +60,7 @@ public class Escale extends Proposition {
         prestation.setFin(getDepart());
         prestation.setEscale(this);
         prestation.setEtat(1);
-        prestation.setPrix(1000.0);
+        prestation.setPrix(prestation.getPrix(connection));
         prestation.insert(connection);
         connection.close();
     }
@@ -145,7 +145,7 @@ public class Escale extends Proposition {
         Escale escale = null;
         try (Connection connection = BddObject.getPostgreSQL()) {
             escale = Escale.getByReference(connection, reference);
-            escale.setPrestations(new Prestation().findAll(connection, null));
+            // escale.setPrestations(new Prestation().findAll(connection, null));
             escale.setQuais(new Quai().findAll(connection, null));
             escale.setListePrestation(escale.getPrestations(connection, idQuai));
             escale.setQuai(idQuai);

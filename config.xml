@@ -5,6 +5,6 @@
         <port>5432</port>
         <database>gestion_port</database>
         <user>postgres</user>
-        <password>root</password>
+        <password>postgres</password>
     </connection>
 </bddobject>

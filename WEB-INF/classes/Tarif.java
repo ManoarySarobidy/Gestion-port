@@ -67,7 +67,7 @@ public class Tarif extends BddObject<Tarif> {
         this.prestation = prestation;
     }
 
-    public void setPrestation(String idPrestation) {
+    public void setPrestation(String idPrestation)  throws Exception {
         Prestation prestation = new Prestation(idPrestation);
         this.setPrestation(prestation);
     }
@@ -80,7 +80,7 @@ public class Tarif extends BddObject<Tarif> {
         this.type = type;
     }
 
-    public void setType(String idType) {
+    public void setType(String idType) throws Exception {
         TypeBateau type = new TypeBateau();
         type.setIdType(idType);
         this.setType(type);
@@ -154,6 +154,10 @@ public class Tarif extends BddObject<Tarif> {
 
     public String toString() {
         return Double.toString(this.getPrix()) + " " + this.getPavillon().getDevise().getValeur();
+    }
+
+    public int getTranche() {
+        return (this.getFin().isInfinite()) ? 1 : (int) (this.getFin() - this.getDebut());
     }
 
 }

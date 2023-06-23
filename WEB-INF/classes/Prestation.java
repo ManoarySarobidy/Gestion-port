@@ -4,6 +4,7 @@ import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Escale;
 import port.Quai;
+import prevision.Prevision;
 
 import java.sql.Time;
 import java.sql.Connection;
@@ -24,6 +25,15 @@ public class Prestation extends BddObject<Prestation> {
     Double prix;
     Integer etat;
     Escale escale;
+    Tarif[] tarifs;
+
+    public void setTarifs(Tarif[] tarifs) {
+        this.tarifs = tarifs;
+    }
+
+    public Tarif[] getTarifs() {
+        return tarifs;
+    }
 
     public void setPrix(Double prix) {
         this.prix = prix;
@@ -35,6 +45,10 @@ public class Prestation extends BddObject<Prestation> {
 
     public Timestamp getFin() {
         return fin;
+    }
+
+    public Quai getQuai() {
+        return quai;
     }
 
     public void setEtat(Integer etat) {
@@ -154,12 +168,33 @@ public class Prestation extends BddObject<Prestation> {
         return tarif.findAll(connection, null);
     }
 
-    public Tarif[] getTarifs() throws Exception {
-        Tarif[] tarifs = null;
-        try (Connection connection = BddObject.getPostgreSQL()) {
-            tarifs = this.getTarifs(connection);
+    public static boolean isBetweenTimestamps(Time timestamp, Time startTimestamp, Time endTimestamp) {
+        return timestamp.toInstant().isAfter(startTimestamp.toInstant()) && timestamp.toInstant().isBefore(endTimestamp.toInstant());
+    }
+
+    public Tarif getTarif(Timestamp time) {
+        for (Tarif tarif : this.getTarifs()) {
+            double duree = Prevision.convertToMinute(time.getTime() - this.getDebut().getTime());
+            if ((tarif.getDebut() <= duree && duree <= tarif.getFin()) && isBetweenTimestamps(new Time(time.getTime()), tarif.getHeureDebut(), tarif.getHeureFin()))
+                return tarif;
         }
-        return tarifs;
+        return null;
+    }
+
+    public double toMillis(double minute) {
+        return minute * 60.0 * 1000.0;
+    }
+
+    public Double getPrix(Connection connection) throws Exception {
+        this.setTarifs(this.getTarifs(connection));
+        Timestamp arrive = new Timestamp(this.getDebut().getTime());
+        double somme = 0;
+        while (arrive.compareTo(this.getFin()) >= 0) {
+            Tarif tarif = this.getTarif(arrive);
+            arrive = new Timestamp((long) (arrive.getTime() + toMillis(tarif.getTranche())));
+            somme += tarif.getPrix();
+        }
+        return somme;
     }
 
 }
