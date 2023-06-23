@@ -144,3 +144,12 @@ create or replace view v_escale as
     on de.reference = p.reference
     left join fin_escale as f_e
     on f_e.id_debut = de.id_debut;
+
+
+CREATE or replace view v_prestation as
+    select 
+        pre.idPrestation as idPrestation, pre.nom as nom, esp.id_escale_prestation as escale, esp.reference as reference,
+        esp.id_quai as quai, esp.debut as debut, esp.fin as fin, esp.prix as prix, esp.etat as etat
+    from prestation as pre
+    join escale_prestation as esp
+    on pre.idPrestation = esp.id_prestation;

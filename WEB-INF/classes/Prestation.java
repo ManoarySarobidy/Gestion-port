@@ -27,12 +27,29 @@ public class Prestation extends BddObject<Prestation> {
     Escale escale;
     Tarif[] tarifs;
 
+    String idEscale;
+
+    public void setIdEscale( String idEscale ) throws Exception{
+        if( idEscale == null ){
+            throw new Exception( "Id escale can't be null" );
+        }
+        this.idEscale = idEscale;
+    }
+
+    public String getIdEscale(){
+        return this.idEscale;
+    }
+
     public void setTarifs(Tarif[] tarifs) {
         this.tarifs = tarifs;
     }
 
     public Tarif[] getTarifs() {
         return tarifs;
+    }
+
+    public void setReference( String reference ) throws Exception{
+        this.reference = reference;
     }
 
     public void setPrix(Double prix) {
@@ -159,22 +176,22 @@ public class Prestation extends BddObject<Prestation> {
         }
     }
 
-    public void update(Connection connection , String idEscalePrestsation){
+    public void update(Connection connection , String idEscalePrestsation) throws Exception{
         boolean open = false;
-        if (open) {
+        if ( connection == null ) {
             connection = BddObject.getPostgreSQL();
             open = true;
         }
-        String sql = "UPDATE escale_prestation SET";
-        sql += "debut = TO_TIMESTAMP('"+this.getDebut()+", 'YYYY-MM-DD HH24:MI:SS.FF'),";
+        String sql = "UPDATE escale_prestation SET ";
+        sql += "debut = TO_TIMESTAMP('"+this.getDebut()+"', 'YYYY-MM-DD HH24:MI:SS.FF'),";
         sql += "fin = TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
-        sql += this.getPrix();
+        sql += " prix = " + this.getPrix();
         sql += " WHERE id_escale_prestation LIKE '"+idEscalePrestsation+"'";
         System.out.println(sql);    
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
         connection.commit();
-        if (open) {
+        if ( open ) {
             connection.close();
             open = false;
         }
@@ -220,6 +237,34 @@ public class Prestation extends BddObject<Prestation> {
             somme += tarif.getPrix();
         }
         return somme;
+    }
+
+
+    @Override
+    public Prestation getById() throws Exception{
+        String sql = "select * from v_prestation where idPrestation like '" + this.getIdPrestation() + "'";
+        Connection connection = BddObject.getPostgreSQL();
+        java.sql.Statement st   = connection.createStatement();
+        java.sql.ResultSet set  = st.executeQuery( sql );
+        set.next();
+            String    reference = set.getString("reference");
+            Timestamp debut     = set.getTimestamp("debut");
+            String    escale    = set.getString("escale");
+            Timestamp fin       = set.getTimestamp("fin");
+            double    prix      = set.getDouble("prix");
+            String    nom       = set.getString("nom");
+            int       etat      = set.getInt("etat");
+            Prestation prestation = new Prestation();
+            prestation.setReference(reference);
+            prestation.setDebut(debut);
+            prestation.setFin(fin);
+            prestation.setIdEscale( escale );
+            prestation.setPrix(prix);
+            prestation.setNom(nom);
+            prestation.setEtat(etat);
+            st.close();
+        connection.close();
+        return prestation;
     }
 
 }

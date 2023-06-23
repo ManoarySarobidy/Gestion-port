@@ -6,6 +6,7 @@
     String reference = request.getParameter("reference");
     Prestation prestation = new Prestation();
     prestation.setIdPrestation( idPrestation );
+    prestation = prestation.getById();
     String idQuai = (request.getParameter("quai") != null) ? request.getParameter("quai") : "QUA001";
     Escale escale = Escale.createEscale(idQuai, reference);
 %>
@@ -22,23 +23,25 @@
 <body>
     <div class="container w-50 shadow p-5 rounded-3" style="margin-top: 5rem;">
         <h1 class="text-center mb-4">Modifier la prestation </h1>
-        <form method="get" action="./controlleur/insert-prestation.jsp" class="">
+        <form method="get" action="./controlleur/update-prestation.jsp" class="">
+            <input type="hidden" value="<%= prestation.getIdEscale() %>" name="idescaleprestation">
             <div class="row">
-                <h4 class="mb-2">Prestation</h4>
+                <h4 class="mb-2">Prestation : <%= prestation.getNom() %></h4>
             </div>
             <input type="hidden" value="<%= idQuai %>" name="quai">
             <div class="row mt-3">
                 <h4 class="mb-2"> Arrive </h4>
-                <input type="datetime-local" name="arrive" class="form-control col" placeholder="Arrive">
+
+                <input type="datetime-local" value="<%= prestation.getDebut() %>" name="arrive" class="form-control col" placeholder="Arrive">
             </div>
             <div class="row mt-3">
                 <h4 class="mb-2"> Depart </h4>
-                <input type="datetime-local" name="depart" class="form-control col" placeholder="Arrive">
+                <input type="datetime-local" name="depart" value="<%= prestation.getFin() %>" class="form-control col" placeholder="Arrive">
                 <input type="hidden" name="reference" value="<%= reference %>">
             </div>
             <div class="row mt-3">
                 <h4 class="mb-2"> Prix du prestation </h4>
-                <input type="text" name="prix" class="form-control col" placeholder="Prix du prestation">
+                <input type="text" name="prix" value="<%= prestation.getPrix() %>" class="form-control col" placeholder="Prix du prestation">
                 <!-- <input type="hidden" name="reference" value="<%= reference %>"> -->
             </div>
             <div class="row">
