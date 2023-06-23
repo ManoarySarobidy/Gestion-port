@@ -3,8 +3,8 @@
     <connection name="PostgreSQL">
         <host>localhost</host>
         <port>5432</port>
-        <database>port</database>
-        <user>rakharrs</user>
-        <password>pixel</password>
+        <database>gestion_port</database>
+        <user>sarobidy</user>
+        <password>manoary</password>
     </connection>
 </bddobject>
