@@ -3,8 +3,11 @@ package escale;
 import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Escale;
+import port.Quai;
+
 import java.sql.Time;
 import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import connection.BddObject;
 
@@ -14,14 +17,54 @@ public class Prestation extends BddObject<Prestation> {
     String idPrestation;
     String nom;
     String reference;
+    @ForeignKey
+    Quai quai;
     Timestamp debut;
     Timestamp fin;
     Double prix;
     Integer etat;
     Escale escale;
 
+    public void setPrix(Double prix) {
+        this.prix = prix;
+    }
+
+    public Double getPrix() {
+        return prix;
+    }
+
+    public Timestamp getFin() {
+        return fin;
+    }
+
+    public void setEtat(Integer etat) {
+        this.etat = etat;
+    }
+
+    public void setQuai(Quai quai) {
+        this.quai = quai;
+    }
+
+    public void setQuai(String idQuai) throws Exception {
+        Quai quai = new Quai();
+        quai.setIdQuai(idQuai);
+        this.setQuai(quai.getById());
+    }
+
+    public Integer getEtat() {
+        return etat;
+    }
+
+    public Timestamp getDebut() {
+        return debut;
+    }
+
     public Escale getEscale() {
         return escale;
+    }
+
+    public String getReference() {
+        return reference;
     }
 
     public void setEscale(Escale escale) throws Exception {
@@ -49,6 +92,14 @@ public class Prestation extends BddObject<Prestation> {
         this.nom = nom;
     }
 
+    public void setDebut(Timestamp debut) {
+        this.debut = debut;
+    }
+
+    public void setFin(Timestamp fin) {
+        this.fin = fin;
+    }
+
     public Prestation() throws Exception {
         this.setTable("prestation");
         this.setConnection("PostgreSQL");
@@ -66,27 +117,30 @@ public class Prestation extends BddObject<Prestation> {
     }
 
 
-    public void insert(Connection con) throws Exception {
+    public void insert(Connection connection) throws Exception {
         boolean open = false;
-        if (open==false) {
-            con = BddObject.getPostgreSQL();
+        if (open) {
+            connection = BddObject.getPostgreSQL();
             open = true;
         }
         this.setCountPK(7);
         this.setFunctionPK("nextval('seq_id_escale_prestation')");
         this.setPrefix("ESP");
         String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values (";
-        sql += "'" + buildPrimaryKey(connection) + "', ";
+        sql += "'" + this.buildPrimaryKey(connection) + "', ";
         sql += "'" + this.getIdPrestation() + "', ";
-        sql += "'" + this.getReference() + "', ";
-        sql += "'" + this.getEscale().getIdQuai() + "', ";
-        sql += "'" + this.getDebut() + "', ";
-        sql += "'" + this.getFin() + "', ";
-        sql += "'" + this.getPrix() + "', ";
-        sql += "'" + this.getEtat() + "')";
-        con.execute(sql);
-        if (open==true) {
-            con.close();
+        sql += "'" + this.getEscale().getReference() + "', ";
+        sql += "'" + this.getEscale().getQuai().getIdQuai() + "', ";
+        sql += "TO_TIMESTAMP('" + this.getDebut() + "', 'YYYY-MM-DD HH24:MI:SS.FF'),";
+        sql += "TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
+        sql += this.getPrix() + ", ";
+        sql += this.getEtat() + ")";
+        System.out.println(sql);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.commit();
+        if (open) {
+            connection.close();
             open = false;
         }
     }
