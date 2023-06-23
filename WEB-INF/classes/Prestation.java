@@ -159,6 +159,27 @@ public class Prestation extends BddObject<Prestation> {
         }
     }
 
+    public void update(Connection connection , String idEscalePrestsation){
+        boolean open = false;
+        if (open) {
+            connection = BddObject.getPostgreSQL();
+            open = true;
+        }
+        String sql = "UPDATE escale_prestation SET";
+        sql += "debut = TO_TIMESTAMP('"+this.getDebut()+", 'YYYY-MM-DD HH24:MI:SS.FF'),";
+        sql += "fin = TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
+        sql += this.getPrix();
+        sql += " WHERE id_escale_prestation LIKE '"+idEscalePrestsation+"'";
+        System.out.println(sql);    
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.commit();
+        if (open) {
+            connection.close();
+            open = false;
+        }
+    }
+
     public Tarif[] getTarifs(Connection connection) throws Exception {
         Tarif tarif = new Tarif();
         tarif.setPavillon(this.getEscale().getBateau().getPavillon());
