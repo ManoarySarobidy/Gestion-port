@@ -145,7 +145,7 @@ public class Escale extends Proposition {
         Escale escale = null;
         try (Connection connection = BddObject.getPostgreSQL()) {
             escale = Escale.getByReference(connection, reference);
-            // escale.setPrestations(new Prestation().findAll(connection, null));
+            escale.setPrestations(new Prestation().findAll(connection, null));
             escale.setQuais(new Quai().findAll(connection, null));
             escale.setListePrestation(escale.getPrestations(connection, idQuai));
             escale.setQuai(idQuai);
@@ -154,7 +154,7 @@ public class Escale extends Proposition {
     }
 
     public Prestation[] getPrestations(Connection connection, String quai) throws Exception {
-        String sql = "select * from escale_prestation e join prestation p on e.id_prestation=p.idPrestation where id_quai='"+quai+"'";
+        String sql = "select * from escale_prestation e join prestation p on e.id_prestation=p.idPrestation where id_quai='" + quai + "'";
         ArrayList<Prestation> prestations = new ArrayList<>();
         java.sql.Statement st = connection.createStatement();
         java.sql.ResultSet set = st.executeQuery( sql );
@@ -169,6 +169,7 @@ public class Escale extends Proposition {
             Integer etat = set.getInt("etat");
             Prestation prestation = new Prestation();
             prestation.setIdPrestation(idPrestation);
+            prestation.setNom(nom);
             prestation.setQuai(idQuai);
             prestation.setDebut(debut);
             prestation.setFin(fin);

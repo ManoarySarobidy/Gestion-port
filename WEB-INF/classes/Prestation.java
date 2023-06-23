@@ -185,6 +185,10 @@ public class Prestation extends BddObject<Prestation> {
         return minute * 60.0 * 1000.0;
     }
 
+    public double getDuree() {
+        return Prevision.convertToMinute(this.getFin().getTime() - this.getDebut().getTime());
+    }
+
     public Double getPrix(Connection connection) throws Exception {
         this.setTarifs(this.getTarifs(connection));
         Timestamp arrive = new Timestamp(this.getDebut().getTime());
