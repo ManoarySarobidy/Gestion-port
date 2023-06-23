@@ -52,7 +52,7 @@ public class Tarif extends BddObject<Tarif> {
         this.quai = quai;
     }
 
-    public void setQuai(String idQuai) {
+    public void setQuai(String idQuai) throws Exception {
         Quai quai = new Quai();
         quai.setIdQuai(idQuai);
         this.setQuai(quai);
@@ -67,7 +67,7 @@ public class Tarif extends BddObject<Tarif> {
         this.prestation = prestation;
     }
 
-    public void setPrestation(String idPrestation) {
+    public void setPrestation(String idPrestation) throws Exception {
         Prestation prestation = new Prestation(idPrestation);
         this.setPrestation(prestation);
     }
@@ -80,7 +80,7 @@ public class Tarif extends BddObject<Tarif> {
         this.type = type;
     }
 
-    public void setType(String idType) {
+    public void setType(String idType) throws Exception {
         TypeBateau type = new TypeBateau();
         type.setIdType(idType);
         this.setType(type);
@@ -120,6 +120,18 @@ public class Tarif extends BddObject<Tarif> {
     public Tarif() throws Exception {
         this.setTable("tarif");
         this.setConnection("PostgreSQL");
+    }
+
+    public void setHeureDebut(Time heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public void setHeureFin(Time heureFin) {
+        this.heureFin = heureFin;
+    }
+
+    public void setMajoration(Double majoration) {
+        this.majoration = majoration;
     }
 
     public Time getHeureDebut() {

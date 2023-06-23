@@ -5,7 +5,7 @@
 
     Prestation prestation = new Prestation();
     prestation.setIdPrestation("PRES001");
-    prestation.setEscale(Escale.createEscale("QUA002", "ESC06242023I052"));
+    prestation.setEscale(Escale.createEscale("QUA001", "ESC06242023I052"));
     Tarif[] tarifs = prestation.getTarifs();
 
 %>
