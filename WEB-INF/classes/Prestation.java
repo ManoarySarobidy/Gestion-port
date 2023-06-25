@@ -25,20 +25,16 @@ public class Prestation extends Validable {
     Escale escale;
     Tarif[] tarifs;
 
-    public String getIdPrestation() {
-        return idPrestation;
-    }
-
-    public void setIdPrestation(String idPrestation) {
-        this.idPrestation = idPrestation;
-    }
-
     public void setTarifs(Tarif[] tarifs) {
         this.tarifs = tarifs;
     }
 
     public Tarif[] getTarifs() throws Exception {
         return tarifs;
+    }
+
+    public void setReference( String reference ) throws Exception{
+        this.reference = reference;
     }
 
     public void setPrix(Double prix) {
@@ -128,6 +124,27 @@ public class Prestation extends Validable {
         if (open) { connection.commit(); connection.close(); }
     }
 
+    public void update(Connection connection , String idEscalePrestsation) throws Exception{
+        boolean open = false;
+        if ( connection == null ) {
+            connection = BddObject.getPostgreSQL();
+            open = true;
+        }
+        String sql = "UPDATE escale_prestation SET ";
+        sql += "debut = TO_TIMESTAMP('"+this.getDebut()+"', 'YYYY-MM-DD HH24:MI:SS.FF'),";
+        sql += "fin = TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
+        sql += " prix = " + this.getPrix();
+        sql += " WHERE id_escale_prestation LIKE '"+idEscalePrestsation+"'";
+        System.out.println(sql);    
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.commit();
+        if ( open ) {
+            connection.close();
+            open = false;
+        }
+    }
+
     public Tarif[] getTarifs(Connection connection) throws Exception {
         Tarif tarif = new Tarif();
         tarif.setPavillon(this.getEscale().getBateau().getPavillon());
@@ -177,29 +194,6 @@ public class Prestation extends Validable {
         return somme;
     }
 
-    public Prestation[] findAll(Connection connection, String order) throws Exception {
-        String sql = "SELECT * FROM prestation";
-        ArrayList<Prestation> prestations = new ArrayList<Prestation>();
-        java.sql.Statement st = connection.createStatement();
-        java.sql.ResultSet set = st.executeQuery(sql);
-        while (set.next()) {
-            prestations.add(new Prestation(set.getString("idprestation"), set.getString("nom")));
-        }
-        st.close();
-        set.close();
-        return prestations.toArray(new Prestation[prestations.size()]);
-    }
-
-    public Prestation getById(Connection connection) throws Exception {
-        String sql = "SELECT * FROM prestation WHERE idPrestation='%s'";
-        ArrayList<Prestation> prestations = new ArrayList<Prestation>();
-        java.sql.Statement st = connection.createStatement();
-        java.sql.ResultSet set = st.executeQuery(String.format(sql, this.getIdPrestation()));
-        set.next();
-        Prestation prestation = new Prestation(set.getString("idprestation"), set.getString("nom"));
-        st.close();
-        set.close();
-        return prestation;
-    }
+}
 
 }

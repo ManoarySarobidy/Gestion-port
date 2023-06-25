@@ -31,8 +31,8 @@ INSERT INTO utilisateur VALUES
 INSERT INTO quai VALUES
     ('QUA001', 'Q1', 30),
     ('QUA002', 'Q2', 40),
-    ('QUA003', 'Q3', 20);
-    ('QUA003', 'Q4', 50);
+    ('QUA003', 'Q3', 20),
+    ('QUA004', 'Q4', 50);
 
 INSERT INTO prestation VALUES
     ('PRES001', 'Stationnement'),
