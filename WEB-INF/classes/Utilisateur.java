@@ -1,13 +1,27 @@
 package utilisateur;
 
 import connection.BddObject;
+import escale.Prestation;
+import escale.Escale;
+import escale.Tarif;
 import connection.annotation.PrimaryKey;
+import connection.annotation.ForeignKey;
 
 public class Utilisateur extends BddObject<Utilisateur> {
 
     @PrimaryKey
     String idUtilisateur;
     String nom;
+    @ForeignKey
+    Profile profile;
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+    
+    public Profile getProfile() {
+        return profile;
+    }
 
     public String getIdUtilisateur() {
         return idUtilisateur;
@@ -34,10 +48,11 @@ public class Utilisateur extends BddObject<Utilisateur> {
         this.setNom(nom);
     }
 
-    public Utilisateur(String idUtilisateur, String nom) throws Exception {
+    public Utilisateur(String idUtilisateur, String nom, Profile profile) throws Exception {
         this();
         this.setIdUtilisateur(idUtilisateur);
         this.setNom(nom);
+        this.setProfile(profile);
     }
 
     public Utilisateur() throws Exception {

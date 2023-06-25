@@ -9,7 +9,8 @@ import connection.annotation.ColumnName;
 
 import escale.Escale;
 
-public class DebutEscale extends BddObject<DebutEscale>{
+public class DebutEscale extends BddObject<DebutEscale> {
+    
     @ColumnName("id_debut")
     String idDebut;
     String reference;

@@ -53,6 +53,12 @@ public class Prevision extends BddObject<Prevision> {
         if (idBateau.isEmpty()) throw new Exception("Selectionner un bateau");
         this.setBateau(new Bateau(idBateau).getById());
     }
+    
+    public void setBateau(String idBateau, Connection connection) throws Exception {
+        if (idBateau == null) throw new Exception("Champ Bateau est null");
+        if (idBateau.isEmpty()) throw new Exception("Selectionner un bateau");
+        this.setBateau(new Bateau(idBateau).getById(connection));
+    }
 
     public Bateau getBateau() {
         return bateau;
