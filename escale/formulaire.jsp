@@ -1,12 +1,18 @@
 <%@page import="escale.Prestation" %>
 <%@page import="escale.Tarif" %>
 <%@page import="escale.Escale" %>
+<%@page import="connection.BddObject" %>
 <%
 
     Prestation prestation = new Prestation();
     prestation.setIdPrestation("PRES001");
-    prestation.setEscale(Escale.createEscale("QUA001", "ESC06242023I052"));
+    Escale escale = Escale.createEscale("QUA001", "ESC06252023N054");
+    // out.print(escale);
+    prestation.setEscale(escale);
+    // out.print(prestation.getEscale());
+    out.println(prestation.getPrix(BddObject.getPostgreSQL()));
     Tarif[] tarifs = prestation.getTarifs();
+    
 
 %>
 <!DOCTYPE html>
@@ -21,7 +27,7 @@
     <div class="container">
         <table class="table">
             <tr>
-                <th>Quai</th>
+                <th>ID</th>
                 <th>Prestation</th>
                 <th>Type</th>
                 <th>Heure debut</th>
@@ -42,6 +48,8 @@
                 <td><%=tarif.getMajoration() %></td>
                 <td><%=tarif.getDebut() %></td>
                 <td><%=tarif.getFin() %></td>
+                <td><%=tarif.getPavillon().getIdPavillon() %></td>
+                <td><%=tarif.getPrix() %></td>
                 <td></td>
             </tr>
             <% } %>

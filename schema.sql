@@ -49,9 +49,15 @@ CREATE TABLE prevision (
     reference VARCHAR(50) NOT NULL UNIQUE
 );
 
+CREATE TABLE profile (
+    id_profile VARCHAR(50) PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE utilisateur (
     idUtilisateur VARCHAR(50) PRIMARY KEY,
-    nom VARCHAR(50) NOT NULL
+    nom VARCHAR(50) NOT NULL,
+    profile VARCHAR(50) REFERENCES profile(id_profile)
 );
 
 CREATE SEQUENCE seq_id_historique
@@ -131,16 +137,32 @@ CREATE SEQUENCE seq_id_escale_prestation
     increment by 1
     minvalue 0;
 
+CREATE SEQUENCE seq_id_validation
+    start with 1
+    increment by 1
+    minvalue 0;
+
 CREATE OR REPLACE VIEW v_liste_prevision_a_venir AS
 SELECT *
 FROM prevision
 WHERE arrive > NOW();
 
-create or replace view v_escale as
-    select p.idBateau as idBateau, de.debut as debut,
-    f_e.fin as fin, p.reference as reference , f_e.cours as cours
-    from prevision as p
-    join debut_escale as de
-    on de.reference = p.reference
-    left join fin_escale as f_e
-    on f_e.id_debut = de.id_debut;
+CREATE OR REPLACE VIEW v_escale AS
+    SELECT p.idBateau AS idBateau, de.debut AS debut,
+    f_e.fin AS fin, p.reference AS reference , f_e.cours AS cours
+    FROM v_liste_prevision_a_venir AS p
+    JOIN debut_escale AS de
+    ON de.reference = p.reference
+    LEFT JOIN fin_escale AS f_e
+    ON f_e.id_debut = de.id_debut;
+
+CREATE OR REPLACE VIEW v_escale_prestation AS 
+    SELECT * 
+    FROM escale_prestation e 
+    JOIN prestation p ON e.id_prestation=p.idPrestation;
+
+CREATE TABLE validation (
+    id_validation VARCHAR(50) PRIMARY KEY,
+    nom VARCHAR(50),
+    id_user VARCHAR(50) REFERENCES utilisateur(idUtilisateur)
+);

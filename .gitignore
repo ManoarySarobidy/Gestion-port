@@ -2,3 +2,4 @@
 /.vscode
 config.xml
 compile.sh
+*.sh

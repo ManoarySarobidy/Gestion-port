@@ -9,6 +9,7 @@ import connection.annotation.ForeignKey;
 import connection.annotation.PrimaryKey;
 import escale.Prestation;
 import port.Quai;
+import prevision.Prevision;
 
 public class Tarif extends BddObject<Tarif> {
 
@@ -16,17 +17,16 @@ public class Tarif extends BddObject<Tarif> {
     String idTarif;
     @ForeignKey
     Quai quai;
-    @ForeignKey
-    Prestation prestation;
+    String idPrestation;
     @ForeignKey
     TypeBateau type;
     @ColumnName("heure_debut")
     Time heureDebut;
     @ColumnName("heure_fin")
     Time heureFin;
+    Double majoration;
     Double debut;
     Double fin;
-    Double majoration;
     @ForeignKey
     Pavillon pavillon;
     Double prix;
@@ -62,18 +62,12 @@ public class Tarif extends BddObject<Tarif> {
         return quai;
     }
 
-    public void setPrestation(Prestation prestation) throws Exception {
-        if (prestation == null) throw new Exception("Prestation est null");
-        this.prestation = prestation;
+    public void setIdPrestation(String idPrestation) {
+        this.idPrestation = idPrestation;
     }
 
-    public void setPrestation(String idPrestation)  throws Exception {
-        Prestation prestation = new Prestation(idPrestation);
-        this.setPrestation(prestation);
-    }
-
-    public Prestation getPrestation() {
-        return prestation;
+    public String getIdPrestation() {
+        return idPrestation;
     }
 
     public void setType(TypeBateau type) {
@@ -117,6 +111,10 @@ public class Tarif extends BddObject<Tarif> {
         return prix;
     }
 
+    public Double getPrixTotal() {
+        return this.getPrix() + this.getPrix() * (this.getMajoration() / 100);
+    }
+
     public Tarif() throws Exception {
         this.setTable("tarif");
         this.setConnection("PostgreSQL");
@@ -146,18 +144,17 @@ public class Tarif extends BddObject<Tarif> {
         return majoration;
     }
 
-    public Tarif(Double prix, Prestation prestation) throws Exception {
-        this.setPrix(prix);
-        this.setPrestation(prestation);
-        this.setPavillon(prestation.getEscale().getBateau().getPavillon());
+    public double getTranche() {
+        long minute = (long) ((this.getFin().isInfinite()) ? (int) 1 : (int) (this.getFin() - this.getDebut()));
+        return minute;
     }
 
-    public String toString() {
-        return Double.toString(this.getPrix()) + " " + this.getPavillon().getDevise().getValeur();
+    public static double toMillis(double minute) {
+        return minute * 60.0 * 1000.0;
     }
 
-    public int getTranche() {
-        return (this.getFin().isInfinite()) ? 1 : (int) (this.getFin() - this.getDebut());
+    public double getTrancheMillis() {
+        return toMillis(this.getTranche());
     }
 
 }

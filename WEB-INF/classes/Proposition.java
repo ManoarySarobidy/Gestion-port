@@ -41,6 +41,14 @@ public class Proposition extends Prevision {
         quai.setIdQuai(idQuai);
         this.setQuai(quai.getById());
     }
+    
+    public void setQuai(String idQuai, Connection connection) throws Exception {
+        if (idQuai == null) throw new Exception("Quai est null");
+        if (idQuai.isEmpty()) throw new Exception("Quai est vide");
+        Quai quai = new Quai();
+        quai.setIdQuai(idQuai);
+        this.setQuai(quai.getById(connection));
+    }
 
     public Quai getQuai() {
         return quai;
