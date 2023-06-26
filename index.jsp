@@ -2,7 +2,7 @@
 <%@page import="utilisateur.Profile" %>
 <%
 
-    request.getSession().setAttribute("utilisateur", new Utilisateur("UTI001", "Tendry", new Profile("PRO002", "Chef-Capitainerie")));
+    request.getSession().setAttribute("utilisateur", new Utilisateur("UTI002", "Aina", new Profile("PRO001", "Capitainerie")));
     response.sendRedirect("./prevision/formulaire.jsp");
 
 %>

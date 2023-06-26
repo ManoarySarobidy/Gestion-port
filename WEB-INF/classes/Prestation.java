@@ -25,16 +25,20 @@ public class Prestation extends Validable {
     Escale escale;
     Tarif[] tarifs;
 
+    public String getIdPrestation() {
+        return idPrestation;
+    }
+
+    public void setIdPrestation(String idPrestation) {
+        this.idPrestation = idPrestation;
+    }
+
     public void setTarifs(Tarif[] tarifs) {
         this.tarifs = tarifs;
     }
 
     public Tarif[] getTarifs() throws Exception {
         return tarifs;
-    }
-
-    public void setReference( String reference ) throws Exception{
-        this.reference = reference;
     }
 
     public void setPrix(Double prix) {
@@ -93,11 +97,11 @@ public class Prestation extends Validable {
 
     public Prestation(String idPrestation) throws Exception {
         this();
-        this.setId(idPrestation);
+        this.setIdPrestation(idPrestation);
     }
 
     public Prestation(String idPrestation, String nom) throws Exception {
-        this(idPrestation);
+        this.setIdPrestation(idPrestation);
         this.setNom(nom);
     }
 
@@ -112,36 +116,42 @@ public class Prestation extends Validable {
 
     public void insert(Connection connection) throws Exception {
         boolean open = false;
-        if (connection == null) { connection = BddObject.getPostgreSQL(); open = true; }
-        this.setCountPK(7);
-        this.setFunctionPK("nextval('seq_id_escale_prestation')");
-        this.setPrefix("ESP");
-        String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values ('%s', '%s', '%s', '%s', TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), %15.8f, %o)";
-        sql = String.format(sql, this.buildPrimaryKey(connection), this.getIdPrestation(), this.getEscale().getReference(), this.getEscale().getQuai().getIdQuai(), this.getDebut(), this.getFin(), this.getPrix(), this.getEtat());
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sql);
-        statement.close();
-        if (open) { connection.commit(); connection.close(); }
+        Statement statement = null;
+        try {
+            if (connection == null) { connection = BddObject.getPostgreSQL(); open = true; }
+            this.setCountPK(7);
+            this.setFunctionPK("nextval('seq_id_escale_prestation')");
+            this.setPrefix("ESP");
+            String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values ('%s', '%s', '%s', '%s', TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), %15.8f, %o)";
+            sql = String.format(sql, this.buildPrimaryKey(connection), this.getIdPrestation(), this.getEscale().getReference(), this.getEscale().getQuai().getIdQuai(), this.getDebut(), this.getFin(), this.getPrix(), this.getEtat());
+            statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            if (open) connection.commit();
+        } catch (Exception e) {
+            if (open) connection.rollback();
+            throw e;
+        } finally {
+            if (statement != null) statement.close();
+            if (open) { connection.close(); }
+        }
     }
 
-    public void update(Connection connection , String idEscalePrestsation) throws Exception{
+    public void update(Connection connection) throws Exception{
         boolean open = false;
-        if ( connection == null ) {
-            connection = BddObject.getPostgreSQL();
-            open = true;
-        }
-        String sql = "UPDATE escale_prestation SET ";
-        sql += "debut = TO_TIMESTAMP('"+this.getDebut()+"', 'YYYY-MM-DD HH24:MI:SS.FF'),";
-        sql += "fin = TO_TIMESTAMP('" + this.getFin() + "', 'YYYY-MM-DD HH24:MI:SS.FF'), ";
-        sql += " prix = " + this.getPrix();
-        sql += " WHERE id_escale_prestation LIKE '"+idEscalePrestsation+"'";
-        System.out.println(sql);    
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sql);
-        connection.commit();
-        if ( open ) {
-            connection.close();
-            open = false;
+        Statement statement = null;
+        try {
+            if (this.getEtat() > 1) throw new Exception("Prestation deja valide donc prestation non modifiable"); 
+            if ( connection == null ) { connection = BddObject.getPostgreSQL(); open = true; }
+            String sql = "UPDATE escale_prestation SET debut = TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), fin = TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), prix = %15.8f WHERE id_escale_prestation='%s'";    
+            statement = connection.createStatement();
+            statement.executeUpdate(String.format(sql, this.getDebut(), this.getFin(), this.getPrix(), this.getId()));
+            if (open) connection.commit();
+        } catch (Exception e) {
+            if (open) connection.rollback();
+            throw e;
+        } finally {
+            if (statement != null) statement.close();
+            if (open) { connection.close(); }
         }
     }
 
@@ -194,6 +204,32 @@ public class Prestation extends Validable {
         return somme;
     }
 
-}
+    public Prestation[] findAll(Connection connection, String order) throws Exception {
+        String sql = "SELECT * FROM prestation";
+        ArrayList<Prestation> prestations = new ArrayList<Prestation>();
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery(sql);
+        while (set.next()) {
+            prestations.add(new Prestation(set.getString("idprestation"), set.getString("nom")));
+        }
+        st.close();
+        set.close();
+        return prestations.toArray(new Prestation[prestations.size()]);
+    }
+
+    public Prestation getById(Connection connection) throws Exception {
+        boolean open = false;
+        if ( connection == null ) { connection = BddObject.getPostgreSQL(); open = true; }
+        String sql = "SELECT * FROM prestation WHERE idPrestation='%s'";
+        ArrayList<Prestation> prestations = new ArrayList<Prestation>();
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery(String.format(sql, this.getIdPrestation()));
+        set.next();
+        Prestation prestation = new Prestation(set.getString("idprestation"), set.getString("nom"));
+        st.close();
+        set.close();
+        if ( open ) { connection.commit(); connection.close(); }
+        return prestation;
+    }
 
 }

@@ -4,7 +4,7 @@
         <host>localhost</host>
         <port>5432</port>
         <database>gestion_port</database>
-        <user>sarobidy</user>
-        <password>manoary</password>
+        <user>postgres</user>
+        <password>postgres</password>
     </connection>
 </bddobject>

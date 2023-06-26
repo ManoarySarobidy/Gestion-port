@@ -70,7 +70,8 @@ public class Validable extends BddObject<Validable> {
         Connection connection = null;
         try {
             connection = BddObject.getPostgreSQL();
-            this.update(user, connection);
+            this.update(connection);
+            this.insert(user, connection);
             connection.commit();
         } catch (Exception e) {
            if (connection != null) connection.rollback();
@@ -80,16 +81,21 @@ public class Validable extends BddObject<Validable> {
         }
     }
 
-    public void update(Utilisateur user, Connection connection) throws Exception {
+    public void update(Connection connection) throws Exception {
         String sql = "UPDATE %s SET etat = 10 WHERE %s='%s'";
         sql = String.format(sql, this.getTable(), this.getPrimaryKey(), this.getId());
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
-        sql = "INSERT INTO validation (id_validation, nom, id_user) VALUES ('%s', '%s', '%s')";
+        statement.close();
+    }
+    
+    public void insert(Utilisateur user, Connection connection) throws Exception {
+        String sql = "INSERT INTO validation (id_validation, nom, id_user) VALUES ('%s', '%s', '%s')";
         this.setPrefix("VAL");
         this.setCountPK(9);
         this.setFunctionPK("nextval('seq_id_validation')");
         sql = String.format(sql, this.buildPrimaryKey(connection), this.getClass().getSimpleName(), user.getIdUtilisateur());
+        Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
         statement.close();
     }

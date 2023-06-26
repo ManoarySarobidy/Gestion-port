@@ -52,6 +52,9 @@ public class Escale extends Proposition {
         setReference(reference);
     }
 
+    public boolean enCours() {
+        return this.getDepart() == null;
+    }
 
     public void ajouterPrestation(Prestation prestation) throws Exception {
         Connection connection = null;
@@ -149,6 +152,17 @@ public class Escale extends Proposition {
         }
         return escale;
     }
+    
+    public static Escale createEscale(String reference) throws Exception {
+        Escale escale = null;
+        try (Connection connection = BddObject.getPostgreSQL()) {
+            escale = Escale.getByReference(connection, reference);
+            escale.setPrestations(new Prestation().findAll(connection, null));
+            escale.setQuais(new Quai().findAll(connection, null));
+            escale.setListePrestation(escale.getPrestations(connection));
+        }
+        return escale;
+    }
 
     public Prestation[] getPrestations(Connection connection, String quai) throws Exception {
         String sql = "SELECT * FROM v_escale_prestation WHERE id_quai='%s' AND reference='%s'";
@@ -158,11 +172,41 @@ public class Escale extends Proposition {
         while( set.next() ) {
             Prestation prestation = new Prestation(set.getString("id_prestation"), set.getString("nom"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("prix"), set.getInt("etat"), this);
             prestation.setId(set.getString("id_escale_prestation"));
-            prestation.setEscale(this);
             prestations.add(prestation);
         }
         st.close();
         return prestations.toArray( new Prestation[ prestations.size() ] );
+    }
+    
+    public Prestation[] getPrestations(Connection connection) throws Exception {
+        String sql = "SELECT * FROM v_escale_prestation WHERE reference='%s'";
+        ArrayList<Prestation> prestations = new ArrayList<>();
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery( String.format(sql, this.getReference()) );
+        while( set.next() ) {
+            Prestation prestation = new Prestation(set.getString("id_prestation"), set.getString("nom"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("prix"), set.getInt("etat"), this);
+            prestation.setId(set.getString("id_escale_prestation"));
+            prestations.add(prestation);
+        }
+        st.close();
+        return prestations.toArray( new Prestation[ prestations.size() ] );
+    }
+    
+    public Prestation getById(Connection connection, String id) throws Exception {
+        boolean open = false;
+        if ( connection == null ) { connection = BddObject.getPostgreSQL(); open = true; }
+        String sql = "SELECT * FROM v_escale_prestation WHERE id_escale_prestation='%s'";
+        ArrayList<Prestation> prestations = new ArrayList<Prestation>();
+        java.sql.Statement st = connection.createStatement();
+        java.sql.ResultSet set = st.executeQuery(String.format(sql, id));
+        set.next();
+        Prestation prestation = new Prestation(set.getString("id_prestation"), set.getString("nom"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("prix"), set.getInt("etat"), this);
+        prestation.setId(set.getString("id_escale_prestation"));
+        prestation.setEscale(this);        
+        st.close();
+        set.close();
+        if ( open ) { connection.commit(); connection.close(); }
+        return prestation;
     }
 
 }
