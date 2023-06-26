@@ -95,6 +95,10 @@
             </table>
         </div>
 
+        <a href="../facturation/facture.jsp?reference=<%=escale.getReference() %>" class="btn btn-primary">
+            Facturer
+        </a>
+
     </div>
 </body>
 </html>

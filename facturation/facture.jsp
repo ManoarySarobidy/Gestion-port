@@ -1,9 +1,10 @@
 <%@page import="facture.Facture" %>
 <%@page import="escale.Escale" %>
-
 <%
-   Escale escale =  Escale.createEscale("ESC06242023I001");
-   Facture facture = escale.facturer();
+
+    Escale escale =  Escale.createEscale(request.getParameter("reference"));
+    Facture facture = escale.facturer();
+
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +17,7 @@
 </head>
 <body>
     
-    <div class="container col-lg-8">
+    <div class="container w-50 shadow p-5 rounded-3 mb-5" style="margin-top: 5rem;">
         <h1>Facture</h1>
         <table class="table">
             <thead>
@@ -27,18 +28,14 @@
               </tr>
             </thead>
             <tbody>
-                    <%
-                        for (int i = 0; i < facture.getFactures().size(); i++) {
-                            out.println("<tr>");
-                            out.println("<td>"+facture.getFactures().get(i).getDesignation()+"</td>");
-                            out.println("<td>"+facture.getFactures().get(i).getQuai().getNom()+"</td>");
-                            out.println("<td>"+facture.getFactures().get(i).getPrix()+"</td>");
-                            out.println("</tr>");
-                        }
-                    %>
-                    <tr>
-                         
-            
+                <% for (int i = 0; i < facture.getFactures().size(); i++) {
+                        out.println("<tr>");
+                        out.println("<td>"+facture.getFactures().get(i).getDesignation()+"</td>");
+                        out.println("<td>"+facture.getFactures().get(i).getQuai().getNom()+"</td>");
+                        out.println("<td>"+facture.getFactures().get(i).getPrix()+"</td>");
+                        out.println("</tr>");
+                } %>
+            </tbody>
           </table>
     </div>
 </body>

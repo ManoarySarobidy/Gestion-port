@@ -91,7 +91,7 @@ public class Escale extends Proposition {
         this.cours = value;
     }
 
-    public double getCours(){
+    public double getCours() {
         return this.cours;
     }
 
@@ -165,66 +165,21 @@ public class Escale extends Proposition {
         return escale;
     }
 
-    public Facture facturer()throws Exception{
-        // TODO
-        //raha tsy mbola tapitra ny escale d mi throws exception 
+    public Facture facturer() throws Exception{
+        // if (this.enCours()) throw new Exception("Escale est encore en cours");
         Facture facture = new Facture();
         
-        Vector<Facture> facturesFilles = new Vector<>();
-        for (Prestation prestation : getListePrestation()) {
-            if(prestation.getEtat() >= 10){
-                //superieur
-                //Tsy ampy cours
-                Facture factureZanaka = new Facture(prestation.getNom(),prestation.getPrix(), prestation.getQuai());
-                facturesFilles.add(factureZanaka);
+        Vector<Facture> factures = new Vector<>();
+        for (Prestation prestation : this.getListePrestation()) {
+            if (prestation.getEtat() >= 10) {
+                factures.add(new Facture(prestation.getNom(),prestation.getPrix(), prestation.getEscale().getQuai()));
             }
-            
         }
-        facture.setFactures(facturesFilles);
+        facture.setFactures(factures);
         return facture;
     
     }
 
-
-    public static Escale createEscale(String reference) throws Exception{
-        Escale escale = null;
-        try (Connection connection = BddObject.getPostgreSQL()) {
-            escale = Escale.getByReference(connection, reference);
-            escale.setPrestations(new Prestation().findAll(connection, null));
-            escale.setQuais(new Quai().findAll(connection, null));
-            escale.setListePrestation(escale.getPrestations(connection));
-        }
-        return escale;
-    }
-
-    public Prestation[] getPrestations(Connection connection) throws Exception{
-        String sql = "select * from escale_prestation e join prestation p on e.id_prestation=p.idPrestation ";
-        ArrayList<Prestation> prestations = new ArrayList<>();
-        java.sql.Statement st = connection.createStatement();
-        java.sql.ResultSet set = st.executeQuery( sql );
-        while( set.next() ){
-            String idPrestation = set.getString("id_prestation");
-            String nom = set.getString("nom");
-            String idQuai = set.getString("id_quai");
-            String reference = set.getString("reference");
-            Timestamp debut = set.getTimestamp("debut");
-            Timestamp fin = set.getTimestamp("fin");
-            Double prix = set.getDouble("prix");
-            Integer etat = set.getInt("etat");
-            Prestation prestation = new Prestation();
-            prestation.setIdPrestation(idPrestation);
-            prestation.setNom(nom);
-            prestation.setQuai(idQuai);
-            prestation.setDebut(debut);
-            prestation.setFin(fin);
-            prestation.setPrix(prix);
-            prestation.setEtat(etat);
-            prestation.setEscale(this);
-            prestations.add(prestation);
-        }
-        st.close();
-        return prestations.toArray( new Prestation[ prestations.size() ] );
-    }
     public Prestation[] getPrestations(Connection connection, String quai) throws Exception {
         String sql = "SELECT * FROM v_escale_prestation WHERE id_quai='%s' AND reference='%s'";
         ArrayList<Prestation> prestations = new ArrayList<>();
@@ -245,7 +200,10 @@ public class Escale extends Proposition {
         java.sql.Statement st = connection.createStatement();
         java.sql.ResultSet set = st.executeQuery( String.format(sql, this.getReference()) );
         while( set.next() ) {
-            Prestation prestation = new Prestation(set.getString("id_prestation"), set.getString("nom"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("prix"), set.getInt("etat"), this);
+            Escale escale = new Escale();
+            escale.setReference(set.getString("reference"));
+            escale.setQuai(set.getString("id_quai"), connection);
+            Prestation prestation = new Prestation(set.getString("id_prestation"), set.getString("nom"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("prix"), set.getInt("etat"), escale);
             prestation.setId(set.getString("id_escale_prestation"));
             prestations.add(prestation);
         }

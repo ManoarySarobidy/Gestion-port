@@ -5,19 +5,17 @@ import java.util.Vector;
 
 import connection.annotation.*;
 import port.Quai;
-public class Facture{
-    
-    
-    String id;
+import validation.Validable;
+public class Facture extends Validable {
+
     String designation;
     Double prix;
     Facture parent;
     Vector<Facture> factures;
-    Quai quai ;
-    
+    Quai quai;
 
-    public Facture(){
-        
+    public Facture() throws Exception {
+        this.setTable("facture");
     }
 
     public void setQuai(Quai quai) {
@@ -53,18 +51,10 @@ public class Facture{
         this.prix = prix;
     }
 
-    public Facture(String designation,Double prix,Quai quai ){
+    public Facture(String designation, Double prix, Quai quai) {
         setDesignation(designation);
         setPrix(prix);
         setQuai(quai);
-    }
-
-    void valider(Connection c){
-        // TODO
-    }
-
-    void insert(Connection c){
-        // TODO
     }
 
 }
