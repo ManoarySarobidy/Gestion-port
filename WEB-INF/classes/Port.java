@@ -2,9 +2,6 @@ package port;
 
 import java.sql.Timestamp;
 import java.util.Vector;
-
-// import element.Proposition;
-
 import connection.BddObject;
 import port.Quai;
 import escale.Escale;
