@@ -27,29 +27,11 @@ public class FinEscale extends BddObject<FinEscale> {
         this.setConnection("PostgreSQL");
     }
 
-    public FinEscale(String idDebut, String fin, String cours) throws Exception{
+    public FinEscale(String idDebut, Timestamp fin, Double cours) throws Exception{
         this();
-       // Connection conn = BddObject.getPostgreSQL();
         this.setIdDebut(idDebut);
-        this.setFin(Prevision.toDate(fin));
-        this.setCours(Double.valueOf(cours));
-        //conn.close();
-    }
-    public void ajouterEscale() throws Exception{
-        
-        Connection conn = null;
-        try{
-            conn = BddObject.getPostgreSQL();
-            this.setIdFin(buildPrimaryKey(conn));
-            this.insert(conn);
-            conn.commit();
-        }
-        catch(Exception e){
-            throw new Exception(e);
-        }
-        finally{
-            conn.close();
-        }
+        this.setFin(fin);
+        this.setCours(cours);
     }
     
     public String getIdFin() {

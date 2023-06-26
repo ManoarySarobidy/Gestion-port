@@ -100,7 +100,7 @@ public class Prevision extends BddObject<Prevision> {
     }
 
     public void setDepart(Timestamp depart) throws Exception {
-        if (this.getArrive() == null) throw new Exception("Il n'y pas encore de date d'arrive");
+        // if (this.getArrive() == null) throw new Exception("Il n'y pas encore de date d'arrive");
         // if (depart == null) throw new  Exception("Depart ne doit pas etre null");
         // if (this.getArrive().compareTo(depart) >= 0) throw new Exception("Depart doit etre derriere la date d'arrive");
         this.depart = depart;

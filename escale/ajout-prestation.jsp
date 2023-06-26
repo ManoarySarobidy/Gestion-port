@@ -60,7 +60,6 @@
                 </select>
                 <input type="hidden" name="reference" value="<%=reference %>">
                 <input type="submit" value="Choisir" class="btn btn-primary mt-3">
-                <a href="./formulaire-fin-escale.jsp?idDebut=<%=escale.getIdDebut()%>"><button type="button" class="btn btn-primary mt-3">Fin escale</button></a>
             </form>
         </div>
 
@@ -100,6 +99,7 @@
         <a href="../facturation/facture.jsp?reference=<%=escale.getReference() %>" class="btn btn-primary">
             Facturer
         </a>
+        <a href="./formulaire-fin-escale.jsp?idDebut=<%=escale.getIdDebut() %>"><button type="button" class="btn btn-primary">Fin escale</button></a>
 
     </div>
 </body>

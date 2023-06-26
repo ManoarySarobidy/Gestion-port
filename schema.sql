@@ -149,7 +149,7 @@ WHERE arrive > NOW();
 
 CREATE OR REPLACE VIEW v_escale AS
     SELECT p.idBateau AS idBateau, de.debut AS debut,
-    f_e.fin AS fin, p.reference AS reference , f_e.cours AS cours
+    f_e.fin AS fin, p.reference AS reference , f_e.cours AS cours, de.id_debut
     FROM v_liste_prevision_a_venir AS p
     JOIN debut_escale AS de
     ON de.reference = p.reference

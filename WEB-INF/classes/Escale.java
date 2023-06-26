@@ -22,7 +22,6 @@ public class Escale extends Proposition {
     Prestation[] listePrestation;
     Quai[] quais;
     Double cours;
-
     String idDebut;
 
     public String getIdDebut() {
@@ -103,6 +102,10 @@ public class Escale extends Proposition {
         this.cours = value;
     }
 
+    public void setCours(String value) throws Exception {
+        this.setCours(Double.valueOf(value));
+    }
+
     public double getCours() {
         return this.cours;
     }
@@ -117,8 +120,8 @@ public class Escale extends Proposition {
     public Escale[] findAll(Connection connection, String order) throws Exception {
         String sql = "SELECT * FROM v_escale";
         ArrayList<Escale> escales = new ArrayList<Escale>();
-        java.sql.Statement st = connection.createStatement();
-        java.sql.ResultSet set = st.executeQuery( sql );
+        Statement st = connection.createStatement();
+        ResultSet set = st.executeQuery( sql );
         while( set.next() ) {
             Escale escale = new Escale(set.getString("reference"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("cours"));
             escale.setBateau( set.getString("idBateau") , connection);
@@ -151,6 +154,7 @@ public class Escale extends Proposition {
         set.next();
         Escale escale = new Escale(set.getString("reference"), set.getTimestamp("debut"), set.getTimestamp("fin"), set.getDouble("cours"));
         escale.setBateau( set.getString("idBateau") , connection);
+        escale.setIdDebut(set.getString("id_debut"));
         return escale;
     }
 
@@ -178,12 +182,12 @@ public class Escale extends Proposition {
     }
 
     public Facture facturer() throws Exception {
-        // if (this.enCours()) throw new Exception("Escale est encore en cours");
+        if (this.enCours()) throw new Exception("Escale est encore en cours");
         Facture facture = new Facture();
         Vector<Facture> factures = new Vector<>();
         for (Prestation prestation : this.getListePrestation()) {
             if (prestation.getEtat() >= 10) {
-                factures.add(new Facture(prestation.getNom(),prestation.getPrix(), prestation.getEscale().getQuai()));
+                factures.add(new Facture(prestation.getNom(), prestation.getPrix() * this.getCours(), prestation.getEscale().getQuai()));
             }
         }
         facture.setFactures(factures);
@@ -234,6 +238,22 @@ public class Escale extends Proposition {
         set.close();
         if ( open ) { connection.commit(); connection.close(); }
         return prestation;
+    }
+
+    public void finir() throws Exception {
+        Connection connection = null;
+        try {
+            connection = BddObject.getPostgreSQL();
+            FinEscale fin = new FinEscale(this.getIdDebut(), this.getDepart(), this.getCours());
+            fin.setIdFin(buildPrimaryKey(connection));
+            fin.insert(connection);
+            connection.commit();
+        } catch(Exception e) {
+            if (connection != null) connection.commit();
+            throw e;
+        } finally {
+            if (connection != null) connection.close();
+        }
     }
 
 }

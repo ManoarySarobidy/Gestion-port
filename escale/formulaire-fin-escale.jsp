@@ -1,13 +1,15 @@
-<%@page import="escale.Escale, escale.DebutEscale, escale.FinEscale"%>
+<%@page import="escale.Escale" %>
 <%
-    if(request.getParameter("validation") != null){
-        String idDebut = request.getParameter("idDebut");
-        String fin = request.getParameter("date_fin");
-        String cour = request.getParameter("cour");
-        FinEscale finEscale = new FinEscale(idDebut,fin, cour);
-        finEscale.ajouterEscale();
-    }  
+
     String idDebut = request.getParameter("idDebut");
+    if (request.getParameter("validation") != null) {
+        Escale escale = new Escale();
+        escale.setIdDebut(idDebut);
+        escale.setDepart(request.getParameter("date_fin"));
+        escale.setCours(request.getParameter("cour"));
+        escale.finir();
+    }
+
 %>
 <!DOCTYPE html>
 <html lang="en">
