@@ -2,12 +2,14 @@
 <%
 
     String idDebut = request.getParameter("idDebut");
+    String reference = request.getParameter("reference");
     if (request.getParameter("validation") != null) {
         Escale escale = new Escale();
         escale.setIdDebut(idDebut);
         escale.setDepart(request.getParameter("date_fin"));
         escale.setCours(request.getParameter("cour"));
         escale.finir();
+        response.sendRedirect("./ajout-prestation.jsp?reference=" + reference);
     }
 
 %>
@@ -29,7 +31,8 @@
                 <input type="datetime-local" name="date_fin" class="form-select">
             </div>
 
-            <input type="hidden" name="idDebut" value="<%=idDebut%>">
+            <input type="hidden" name="idDebut" value="<%=idDebut %>">
+            <input type="hidden" name="idDebut" value="<%=reference %>">
 
             <div class="row mt-3">
                 <h4 class="mb-2">Cour</h4>

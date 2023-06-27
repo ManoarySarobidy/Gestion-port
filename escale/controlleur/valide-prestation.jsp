@@ -4,7 +4,8 @@
 <%
     
     try {
-        Prestation prestation = new Prestation(request.getParameter("prestation"));
+        Prestation prestation = new Prestation();
+        prestation.setId(request.getParameter("prestation"));
         prestation.validate((Utilisateur) request.getSession().getAttribute("utilisateur"));
         response.sendRedirect("../ajout-prestation.jsp?reference=" + request.getParameter("reference") + "&&quai=" + request.getParameter("quai"));
     } catch (Exception e) {

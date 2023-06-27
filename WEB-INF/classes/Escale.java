@@ -23,6 +23,15 @@ public class Escale extends Proposition {
     Quai[] quais;
     Double cours;
     String idDebut;
+    Facture[] factures;
+
+    public void setFactures(Facture[] factures) {
+        this.factures = factures;
+    }
+
+    public Facture[] getFactures() {
+        return factures;
+    }
 
     public String getIdDebut() {
         return idDebut;
@@ -71,7 +80,7 @@ public class Escale extends Proposition {
     public void ajouterPrestation(Prestation prestation) throws Exception {
         Connection connection = null;
         try {
-            if (this.contains(prestation)) throw new Exception("Prestation " + prestation.getNom() + " deja ajouter");
+            if (this.contains(prestation)) throw new Exception("Prestation deja ajouter");
             connection = BddObject.getPostgreSQL();
             prestation.setDebut(this.getArrive());
             prestation.setFin(this.getDepart());
@@ -131,11 +140,20 @@ public class Escale extends Proposition {
         return escales.toArray( new Escale[ escales.size() ] );
     }
 
+    public boolean contains(Connection connection) throws Exception {
+        for (Escale escale : this.findAll(connection, null)) {
+            if (escale.getReference().equals(this.getReference()))
+                return true;
+        }
+        return false;
+    }
+
     public void debuter() throws Exception {
         DebutEscale debutEscale = new DebutEscale(this.getReference(), this.getArrive());
         Connection connection = null;
         try {
             connection = BddObject.getPostgreSQL();
+            if (this.contains(connection)) throw new Exception("Vous avez deja debuter cette escale"); 
             debutEscale.setIdDebut(debutEscale.buildPrimaryKey(connection));
             debutEscale.insert(connection);
             connection.commit();
@@ -165,6 +183,7 @@ public class Escale extends Proposition {
             escale.setPrestations(new Prestation().findAll(connection, null));
             escale.setQuais(new Quai().findAll(connection, null));
             escale.setListePrestation(escale.getPrestations(connection, idQuai));
+            escale.setFactures(escale.getFactures(connection));
             escale.setQuai(idQuai);
         }
         return escale;
@@ -177,22 +196,32 @@ public class Escale extends Proposition {
             escale.setPrestations(new Prestation().findAll(connection, null));
             escale.setQuais(new Quai().findAll(connection, null));
             escale.setListePrestation(escale.getPrestations(connection));
+            escale.setFactures(escale.getFactures(connection));
         }
         return escale;
     }
 
+    public boolean containsFacture() {
+        for (Facture facture : factures) {
+            if (facture.getEtat() >= 10) return true;
+        }
+        return false;
+    }
+
     public Facture facturer() throws Exception {
         if (this.enCours()) throw new Exception("Escale est encore en cours");
+        if (this.containsFacture()) throw new Exception("Il y a deja une facture deja validee pour cette escale");
         Facture facture = new Facture();
-        Vector<Facture> factures = new Vector<>();
+        facture.setEscale(this);
+        ArrayList<Facture> factures = new ArrayList<>();
         for (Prestation prestation : this.getListePrestation()) {
             if (prestation.getEtat() >= 10) {
-                factures.add(new Facture(prestation.getNom(), prestation.getPrix() * this.getCours(), prestation.getEscale().getQuai()));
+                prestation.setPrix(prestation.getPrix() * this.getCours());
+                factures.add(new Facture(prestation));
             }
         }
         facture.setFactures(factures);
         return facture;
-    
     }
 
     public Prestation[] getPrestations(Connection connection, String quai) throws Exception {
@@ -254,6 +283,18 @@ public class Escale extends Proposition {
         } finally {
             if (connection != null) connection.close();
         }
+    }
+
+    public Facture[] getFactures(Connection connection) throws Exception {
+        String sql = "SELECT * FROM facture WHERE reference='%s'";
+        ArrayList<Facture> factures = new ArrayList<>();
+        Statement st = connection.createStatement();
+        ResultSet set = st.executeQuery( String.format(sql, this.getReference()) );
+        while( set.next() ) {
+            factures.add(new Facture(set.getString("id_facture"), set.getString("reference"), set.getTimestamp("date"), set.getInt("etat")));
+        }
+        st.close();
+        return factures.toArray(new Facture[factures.size()]);
     }
 
 }
