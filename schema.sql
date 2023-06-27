@@ -149,7 +149,7 @@ WHERE arrive > NOW();
 
 CREATE OR REPLACE VIEW v_escale AS
     SELECT p.idBateau AS idBateau, de.debut AS debut,
-    f_e.fin AS fin, p.reference AS reference , f_e.cours AS cours
+    f_e.fin AS fin, p.reference AS reference , f_e.cours AS cours, de.id_debut
     FROM v_liste_prevision_a_venir AS p
     JOIN debut_escale AS de
     ON de.reference = p.reference
@@ -161,8 +161,46 @@ CREATE OR REPLACE VIEW v_escale_prestation AS
     FROM escale_prestation e 
     JOIN prestation p ON e.id_prestation=p.idPrestation;
 
-CREATE TABLE validation (
+CREATE TABLE validation_escale (
     id_validation VARCHAR(50) PRIMARY KEY,
-    nom VARCHAR(50),
-    id_user VARCHAR(50) REFERENCES utilisateur(idUtilisateur)
+    id_user VARCHAR(50) REFERENCES utilisateur(idUtilisateur),
+    id_escale_prestation VARCHAR(50) REFERENCES escale_prestation(id_escale_prestation)
 );
+
+CREATE SEQUENCE seq_id_facture
+    start with 1
+    increment by 1
+    minvalue 0;
+
+CREATE SEQUENCE seq_id_detail
+    start with 1
+    increment by 1
+    minvalue 0;
+
+CREATE TABLE facture (
+    id_facture VARCHAR(50) PRIMARY KEY,
+    reference VARCHAR(50) REFERENCES prevision(reference),
+    date TIMESTAMP NOT NULL DEFAULT NOW(),
+    etat INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE detailfacture (
+    id_facture VARCHAR(50) REFERENCES facture(id_facture),
+    id_detail_facture VARCHAR(50) PRIMARY KEY,
+    id_escale_prestation VARCHAR(50) REFERENCES escale_prestation(id_escale_prestation)
+);
+
+CREATE TABLE validation_facture (
+    id_validation VARCHAR(50) PRIMARY KEY,
+    id_user VARCHAR(50) REFERENCES utilisateur(idUtilisateur),
+    id_facture VARCHAR(50) REFERENCES facture(id_facture)
+);
+
+
+CREATE OR REPLACE VIEW v_detail_facture AS
+SELECT d.id_facture, p.nom, q.idquai as quai, e.prix * v.cours AS prix, e.debut, e.fin
+FROM detailfacture d
+    JOIN escale_prestation e ON d.id_escale_prestation=e.id_escale_prestation
+    JOIN prestation p ON e.id_prestation=p.idprestation
+    JOIN quai q ON q.idquai=e.id_quai
+    JOIN v_escale v ON v.reference=e.reference;

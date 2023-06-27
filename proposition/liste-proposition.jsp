@@ -3,9 +3,12 @@
 <%@page import="port.Quai" %>
 <%@page import="escale.Escale"%>
 <%
+
+    String error = (request.getParameter("error") == null) ? "" : request.getParameter("error");
     Port port = Port.createPort();
     Proposition[] propositions = port.getPropositions();
     Escale[] escales = port.getEscales();
+
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,6 +75,7 @@
             </table>
         </div>
         <a href="../prevision/formulaire.jsp" class="btn btn-primary">Ajouter des previsions</a>
+        <h3 class="mt-4 text-danger"><%=error %></h3>
     </div>
 </body>
 </html>

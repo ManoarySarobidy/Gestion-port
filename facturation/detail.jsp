@@ -2,15 +2,8 @@
 <%@page import="escale.Escale" %>
 <%
 
-    Facture facture = new Facture();
-    Escale escale = new Escale();
-    try {
-        escale = Escale.createEscale(request.getParameter("reference"));
-        facture = escale.facturer();
-        facture.insert(null);
-    } catch (Exception e) {
-        response.sendRedirect("../escale/ajout-prestation.jsp?error=" + e.getMessage() + "&&reference=" + request.getParameter("reference"));
-    }
+    String reference = request.getParameter("reference");
+    Facture facture = Facture.createFacture(request.getParameter("facture"));
 
 %>
 <!DOCTYPE html>
@@ -44,7 +37,7 @@
                 <% } %>
             </tbody>
           </table>
-          <a href="./formulaire-fin-escale.jsp?facture=<%=facture.getId() %>&&reference=<%=escale.getReference() %>"><button type="button" class="btn btn-primary">Valider</button></a>
+          <a href="./controlleur/valide-facture.jsp?reference=<%=reference %>&&facture=<%=facture.getId() %>"><button type="button" class="btn btn-primary">Valider</button></a>
     </div>
 </body>
 </html>

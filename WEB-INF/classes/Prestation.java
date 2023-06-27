@@ -66,7 +66,7 @@ public class Prestation extends Validable {
     }
 
     public void setEscale(Escale escale) throws Exception {
-        if (escale == null) throw new Exception("Escale est null");
+        // if (escale == null) throw new Exception("Escale est null");
         this.escale = escale;
     }
 
@@ -91,6 +91,7 @@ public class Prestation extends Validable {
     public Prestation() throws Exception {
         this.setTable("escale_prestation");
         this.setPrimaryKey("id_escale_prestation");
+        this.setValidation("validation_escale");
         this.setConnection("PostgreSQL");
         this.setProfile(new Profile("PRO002"));
     }
@@ -122,7 +123,7 @@ public class Prestation extends Validable {
             this.setCountPK(7);
             this.setFunctionPK("nextval('seq_id_escale_prestation')");
             this.setPrefix("ESP");
-            String sql = "insert into escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) values ('%s', '%s', '%s', '%s', TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), %15.8f, %o)";
+            String sql = "INSERT INTO escale_prestation (id_escale_prestation, id_prestation, reference, id_quai, debut, fin, prix, etat) VALUES ('%s', '%s', '%s', '%s', TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF'), %15.8f, %o)";
             sql = String.format(sql, this.buildPrimaryKey(connection), this.getIdPrestation(), this.getEscale().getReference(), this.getEscale().getQuai().getIdQuai(), this.getDebut(), this.getFin(), this.getPrix(), this.getEtat());
             statement = connection.createStatement();
             statement.executeUpdate(sql);

@@ -1,6 +1,7 @@
 <%@page import="port.Quai" %>
-<%@page import="escale.Escale"%>
-<%@page import="escale.Prestation"%>
+<%@page import="escale.Escale" %>
+<%@page import="escale.Prestation" %>
+<%@page import="facture.Facture" %>
 <%
 
     String error = (request.getParameter("error") == null) ? "" : request.getParameter("error");
@@ -21,6 +22,7 @@
 <body>
     <div class="container w-50 shadow p-5 rounded-3 mb-5" style="margin-top: 5rem;">
         <h1 class="text-center mb-4">Ajout prestation</h1>
+                
         <form method="get" action="./controlleur/insert-prestation.jsp" class="">
             <div class="row">
                 <h4 class="mb-2">Prestation</h4>
@@ -98,7 +100,32 @@
         <a href="../facturation/facture.jsp?reference=<%=escale.getReference() %>" class="btn btn-primary">
             Facturer
         </a>
+        <a href="./formulaire-fin-escale.jsp?idDebut=<%=escale.getIdDebut() %>&&reference=<%=escale.getReference() %>"><button type="button" class="btn btn-primary">Fin escale</button></a>
 
+
+        <div class="row mt-4">
+            <h2>Facture</h2>
+            <table class="table mt-3">
+                <tr>
+                    <th>Date</th>
+                    <th>Etat</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <% for (Facture facture : escale.getFactures()) { %>
+                <tr>
+                    <td><%=facture.getDate() %></td>
+                    <td><%=facture.getEtatLettre() %></td>
+                    <td><a href="../facturation/controlleur/valide-facture.jsp?facture=<%=facture.getId() %>&&reference=<%=escale.getReference() %>&&quai=<%=escale.getQuai().getIdQuai() %>"><svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="48"><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/></svg></a></td>
+                    <td>
+                        <a href="../facturation/detail.jsp?reference=<%=escale.getReference() %>&&facture=<%=facture.getId() %>&&quai=<%=escale.getQuai().getIdQuai() %>" class="btn btn-primary">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+                <% } %>
+            </table>
+        </div>
     </div>
 </body>
 </html>

@@ -11,7 +11,16 @@ public class Validable extends BddObject<Validable> {
     String id;
     String primaryKey;
     int etat;
+    String validation;
     Profile profile;
+
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
+
+    public String getValidation() {
+        return validation;
+    }
 
     public void setPrimaryKey(String primaryKey) {
         this.primaryKey = primaryKey;
@@ -70,32 +79,26 @@ public class Validable extends BddObject<Validable> {
         Connection connection = null;
         try {
             connection = BddObject.getPostgreSQL();
-            this.update(connection);
-            this.insert(user, connection);
+            this.update(connection, user);
             connection.commit();
         } catch (Exception e) {
-           if (connection != null) connection.rollback();
+            if (connection != null) connection.rollback();
             throw e;
         } finally {
             if (connection != null) connection.close();
         }
     }
 
-    public void update(Connection connection) throws Exception {
+    public void update(Connection connection, Utilisateur user) throws Exception {
         String sql = "UPDATE %s SET etat = 10 WHERE %s='%s'";
         sql = String.format(sql, this.getTable(), this.getPrimaryKey(), this.getId());
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
-        statement.close();
-    }
-    
-    public void insert(Utilisateur user, Connection connection) throws Exception {
-        String sql = "INSERT INTO validation (id_validation, nom, id_user) VALUES ('%s', '%s', '%s')";
+        sql = "INSERT INTO %s (id_validation, id_user, %s) VALUES ('%s', '%s', '%s')";
         this.setPrefix("VAL");
         this.setCountPK(9);
         this.setFunctionPK("nextval('seq_id_validation')");
-        sql = String.format(sql, this.buildPrimaryKey(connection), this.getClass().getSimpleName(), user.getIdUtilisateur());
-        Statement statement = connection.createStatement();
+        sql = String.format(sql, this.getValidation(), this.getPrimaryKey(), this.buildPrimaryKey(connection), user.getIdUtilisateur(), this.getId());
         statement.executeUpdate(sql);
         statement.close();
     }
